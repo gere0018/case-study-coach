@@ -163,7 +163,7 @@ function paintAi(){var el=$('#aiNote');if(!el)return;el.textContent=aiText()}
 function aiText(){
   if(T.ai==='pending')return 'Connecting to Claude…';
   if(T.ai==='ok')return 'Claude coaches your answers and writes the previews. The first time, you’ll be asked to allow it.';
-  return 'Running in basic mode: no AI. You answer the nine questions, and the page checks them and reviews your gaps. Your notes stay visible as a reference. Everything stays in this browser.';
+  return 'Running in basic mode: no AI. You answer the nine questions, and the page checks them and reviews your gaps. Your notes, if you paste them, are only used to check your answers. Everything stays in this browser.';
 }
 function askJSON(prompt,tier,signal){
   if(!sampleFn)return Promise.reject({code:'unavailable',message:'Claude is not available'});

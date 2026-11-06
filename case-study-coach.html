@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case Study Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0D14;--surface:#0A0D14;--rail:#0D1119;--raised:#232A36;--sunken:#141A24;
+  --ink:#F7F9FC;--muted:#9BA5B4;--line:#363E4C;--line-strong:#5B6577;--field:#7C8799;
+  --accent:#00E5FF;--accent-text:#00E5FF;--on-accent:#0A0D14;--accent-soft:rgba(0,229,255,.10);--accent-hover:#5CF0FF;
+  --amber-bg:rgba(255,196,77,.10);--amber-ink:#FFD98A;--amber-line:#C99A3B;
+  --violet-bg:rgba(143,128,218,.16);--violet-ink:#DAD3FF;--violet-line:#8F80DA;
+  --red:#FF9DA8;--frame-color:#A2EBF4;--frame:8px;
+  --serif:'Fraunces',Georgia,'Times New Roman',serif;
+  --sans:'Nunito',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);background:var(--frame-color)}
+body{height:100%;margin:0;padding:var(--frame);background:var(--frame-color);color:var(--ink);font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,p,ul,ol,dl,dd{margin:0}
+ul,ol{padding:0;list-style:none}
+button,input,textarea{font:inherit;color:inherit}
+::placeholder{color:#8B96A8;opacity:1}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:12px;top:-70px;background:var(--accent);color:var(--on-accent);padding:10px 18px;border-radius:999px;font-weight:800;z-index:50}
+.skip:focus{top:12px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+[tabindex="-1"]:focus{outline:none}
+
+#app{height:100%;display:flex;flex-direction:column;min-height:0;background:var(--bg);border-radius:22px;overflow:hidden}
+.hdr{flex:0 0 68px;display:flex;align-items:center;gap:16px;padding:0 28px;background:var(--bg);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font:600 19px/1 var(--serif);letter-spacing:-.01em;white-space:nowrap}
+.logo{width:28px;height:28px;color:var(--accent)}
+.vr{width:1px;height:24px;background:var(--line)}
+.title-wrap{flex:0 1 360px;min-width:140px}
+.title-input{width:100%;height:40px;border:1px solid transparent;border-radius:12px;background:transparent;padding:0 12px;font-weight:700}
+.title-input:hover{border-color:var(--line-strong)}
+.title-input:focus{border-color:var(--accent);background:var(--sunken)}
+.title-input::placeholder{color:var(--muted);font-weight:400}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:14px}
+.mode,.saved{font-size:14px;color:var(--muted);white-space:nowrap}
+.saved.bad{color:var(--red)}
+
+.rule{height:2px;background:var(--accent);border-radius:2px;margin-bottom:18px}
+.eyebrow,.cap,.coachsays{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.eyebrow.cy{color:var(--accent-text)}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:999px;border:1.5px solid var(--line-strong);background:transparent;color:var(--ink);font-weight:800;font-size:15px;cursor:pointer;text-align:center}
+.btn:hover{background:rgba(255,255,255,.07);border-color:var(--field)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.ghost{border-color:transparent;color:var(--accent-text)}
+.btn.ghost:hover{background:var(--accent-soft)}
+.btn.small{min-height:38px;padding:0 16px;font-size:14px}
+.btn.block{width:100%}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.55;cursor:not-allowed}
+.link{background:none;border:0;padding:0;color:var(--accent-text);text-decoration:underline;cursor:pointer;font-weight:700}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+
+.page{flex:1;min-height:0;overflow:auto;padding:44px 28px 72px}
+.narrow{max-width:800px;margin:0 auto}
+.start .narrow{max-width:940px}
+.start h1,.page h1{font:600 clamp(32px,4.4vw,54px)/1.05 var(--serif);letter-spacing:-.025em}
+.lede{font-size:18px;color:var(--muted);margin-top:14px;max-width:62ch}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:30px}
+.opt{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:20px;border-radius:18px;border:1px solid var(--line-strong);background:transparent;cursor:pointer}
+.opt:hover{border-color:var(--field);background:rgba(255,255,255,.03)}
+.opt.on{border:2px solid var(--accent);padding:19px;background:var(--raised)}
+.opt[disabled]{opacity:.6;cursor:not-allowed}
+.opt-ic{color:var(--accent-text);display:flex}
+.opt-t{font:600 21px/1.2 var(--serif);letter-spacing:-.01em}
+.opt-d{font-size:14.5px;color:var(--muted);line-height:1.45}
+.panel{margin-top:16px;padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--raised)}
+.lbl{display:block;font-weight:800;margin-bottom:4px}
+.hint{font-size:14px;color:var(--muted);margin-bottom:10px;max-width:68ch}
+textarea,input[type=text],input[type=url]{width:100%;border:1.5px solid var(--field);border-radius:14px;background:var(--sunken);padding:13px 16px;line-height:1.55}
+textarea:focus,input[type=url]:focus{border-color:var(--accent)}
+textarea{resize:vertical;display:block}
+.row{display:flex;gap:12px;align-items:center}
+.between{justify-content:space-between}
+.count{font-size:13px;color:var(--muted)}
+.err{color:var(--red);font-weight:700;font-size:14px;margin:8px 0 0}
+.err:empty{display:none}
+.ainote{margin-top:22px;font-size:14px;color:var(--muted)}
+.loading{display:flex;gap:14px;align-items:center;padding:18px 20px;border:1px solid var(--line);border-radius:18px;background:var(--raised)}
+.loading p{color:var(--muted);font-size:14px}
+.spin{flex:none;width:22px;height:22px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none;border-color:var(--accent)}*{scroll-behavior:auto!important;transition:none!important}}
+
+.flow{margin-top:40px}
+.flow-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:34px;margin-top:12px}
+.fstep{position:relative;border:1px solid var(--line);border-radius:999px;padding:16px 26px 16px 28px;min-height:92px}
+.fstep.on{border:1.5px solid var(--accent);background:var(--raised)}
+.fstep b{display:block;font:600 19px/1.2 var(--serif)}
+.fstep span{display:block;font-size:13px;color:var(--muted);line-height:1.35;margin-top:3px}
+.fstep:not(:last-child)::after{content:"\2192" / "";position:absolute;right:-26px;top:50%;transform:translateY(-50%);color:var(--accent);font-weight:800}
+
+.readout-grid{display:grid;gap:12px;margin-top:22px}
+.ro-item{border:1px solid var(--line);background:var(--raised);border-radius:18px;padding:18px}
+.ro-item.todo{border:1px dashed var(--line-strong);background:transparent}
+.ro-item h3{font:600 19px/1.25 var(--serif)}
+.ro-quote{margin:8px 0;padding-left:12px;border-left:3px solid var(--accent);color:var(--muted);font-size:14px}
+.ro-item textarea{min-height:80px;margin-top:6px}
+.chk{display:flex;align-items:center;gap:10px;margin-top:12px;font-weight:700}
+.chk input{width:20px;height:20px;accent-color:var(--accent)}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.stat{padding:14px 18px;border:1px solid var(--line);border-radius:18px;background:var(--raised);min-width:140px}
+.stat b{display:block;font:600 30px/1.1 var(--serif);letter-spacing:-.02em}
+.stat span{font-size:13px;color:var(--muted)}
+.banner{margin-top:16px;padding:12px 16px;border-radius:14px;background:var(--amber-bg);color:var(--amber-ink);border:1px solid var(--amber-line);font-size:14px}
+
+.work{flex:1;min-height:0;display:grid;grid-template-columns:276px minmax(0,1.25fr) minmax(340px,1fr)}
+.work>*{min-height:0;overflow:auto}
+.rail{background:var(--rail);border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;gap:24px}
+.big{font:600 46px/1 var(--serif);letter-spacing:-.03em;margin:4px 0 10px;color:var(--accent-text)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar>span{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.sm{font-size:14px}.muted{color:var(--muted)}
+.rail-sec .sm{margin-top:8px}
+.h-sm{font:800 12px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.count-pill{display:inline-flex;min-width:22px;height:22px;padding:0 7px;border-radius:99px;background:var(--accent);color:var(--on-accent);font-size:12px;letter-spacing:0;align-items:center;justify-content:center}
+.stage{width:100%;display:flex;gap:12px;align-items:center;text-align:left;padding:9px 8px;border:0;border-radius:12px;background:transparent;cursor:pointer}
+.stage:hover{background:rgba(255,255,255,.06)}
+.mk{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-strong);background:transparent;display:flex;align-items:center;justify-content:center;color:var(--on-accent)}
+.stage.done .mk{background:var(--accent);border-color:var(--accent)}
+.stage.cur .mk{border-color:var(--accent);border-width:2px}
+.dotfill{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.st-n{display:block;font-size:15px}
+.stage.cur .st-n{font-weight:800}
+.st-s{display:block;font-size:13px;color:var(--muted)}
+.gaps{display:grid;gap:8px}
+.gap{width:100%;text-align:left;border:1px solid var(--line-strong);background:var(--sunken);border-radius:14px;padding:10px 12px;cursor:pointer;display:block}
+.gap:hover{border-color:var(--field)}
+.gap-tag{display:block;font-size:13px;font-weight:800;color:var(--amber-ink)}
+.gap-q{display:block;font-size:14px}
+.gap-d{display:block;font-size:13px;color:var(--muted);font-style:italic}
+.honest{background:var(--raised);border:1px solid var(--line);border-radius:16px;padding:14px}
+.honest b{display:block;margin-bottom:2px}
+.honest p{font-size:14px;color:var(--muted)}
+
+.center{background:var(--bg);padding:28px 40px 56px}
+.center-in{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.qprog{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:8px}
+.stepper{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.dot{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line-strong);background:transparent;font-size:13px;font-weight:800;cursor:pointer;padding:0}
+.dot:hover{border-color:var(--field)}
+.dot.ans{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text)}
+.dot.skip{border-style:dashed}
+.dot.cur{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.q-title{font:600 clamp(30px,3.2vw,42px)/1.08 var(--serif);letter-spacing:-.025em;outline:none;margin-top:6px}
+.q-help{color:var(--muted);max-width:60ch}
+#answer{min-height:220px;border-width:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line-strong);background:var(--sunken);border-radius:14px;padding:9px 14px;font-size:14px;cursor:pointer;text-align:left}
+.chip:hover{border-color:var(--accent);background:var(--accent-soft)}
+.actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:6px}
+.note{border-radius:16px;padding:16px 18px;border:1px solid}
+.note h4{font-size:15px;font-weight:800;margin-bottom:4px}
+.note p{font-size:15px}
+.note .btnrow{margin-top:12px}
+.note.teal{background:var(--accent-soft);border-color:var(--accent)}
+.note.amber{background:var(--amber-bg);border-color:var(--amber-line);color:var(--amber-ink)}
+.note.violet{background:var(--violet-bg);border-color:var(--violet-line);color:var(--violet-ink)}
+.note .quote{margin:8px 0;padding-left:12px;border-left:3px solid currentColor}
+.note .quote span{display:block;font-size:13px;font-weight:800}
+.note .btn{color:var(--ink)}
+.coach-h{font:800 12px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.coach{display:grid;gap:12px}
+.coach.loading{display:flex}
+.okline{display:flex;gap:8px;align-items:center;color:var(--accent-text);font-weight:800}
+.notice{font-size:14px;color:var(--muted)}
+
+.pv{background:var(--rail);border-left:1px solid var(--line);padding:26px}
+.pv-top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:16px}
+.h-md{font:600 26px/1.15 var(--serif);letter-spacing:-.02em}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);color:var(--accent-text);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+.pill.strong{background:var(--accent);color:var(--on-accent)}
+.pill.mixed{background:var(--amber-bg);border-color:var(--amber-line);color:var(--amber-ink)}
+.pill.weak{background:var(--violet-bg);border-color:var(--violet-line);color:var(--violet-ink)}
+.pv-doc{background:var(--raised);border:1px solid var(--line);border-radius:20px;padding:24px;display:grid;gap:14px}
+.pv-title{font:600 28px/1.15 var(--serif);letter-spacing:-.02em}
+.pv-meta{font-size:14px;color:var(--muted);margin-top:-6px}
+.pv-doc hr{border:0;border-top:1px solid var(--line-strong);width:100%;margin:0}
+.pv-block{padding:14px 16px;border-radius:14px;background:var(--sunken);border:1px solid transparent}
+.pv-block.cur{border-color:var(--accent);background:var(--accent-soft)}
+.pv-block.empty,.pv-block.skipped{background:transparent;border:1.5px dashed var(--line-strong);color:var(--muted)}
+.pv-block.hold{border:1.5px dashed var(--violet-line);background:var(--violet-bg);color:var(--violet-ink)}
+.pv-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:4px}
+.pv-head h4{font:600 17px/1.25 var(--serif)}
+.src{font-size:12.5px;color:var(--muted);text-align:right}
+.pv-block p{font-size:15.5px;line-height:1.55}
+.pv-block .tagline{font-size:13.5px;margin-top:6px;font-weight:700}
+.tagline.amber{color:var(--amber-ink)}
+.tagline.violet{color:var(--violet-ink)}
+.orig{margin-top:6px;font-size:13.5px;color:var(--muted)}
+.orig summary{cursor:pointer;width:max-content}
+.orig p{font-size:14px;margin-top:4px}
+
+.two{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.85fr)}
+.two>*{min-height:0;overflow:auto}
+.lens-grid{display:grid;gap:10px;margin-top:16px}
+.lens{border:1px solid var(--line);background:var(--raised);border-radius:16px;padding:14px 16px}
+.lens-h{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:4px}
+.lens-h b{font:600 17px/1.2 var(--serif)}
+.gapcards{display:grid;gap:10px;margin-top:10px}
+.gc{border:1.5px solid var(--line-strong);background:var(--sunken);border-radius:18px;padding:16px;display:grid;gap:8px}
+.gc:first-child{border-color:var(--accent);background:var(--raised)}
+.gc-n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--on-accent);align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:none}
+.gc-t{display:flex;gap:10px;align-items:flex-start}
+.gc-t b{font:600 18px/1.25 var(--serif);padding-top:1px}
+.sec-h{font:800 12px/1.3 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--accent-text);margin-top:28px}
+.doc{max-width:720px;margin:0 auto;display:grid;gap:8px}
+.doc-title{font:600 38px/1.12 var(--serif);letter-spacing:-.025em;border:1px solid transparent;background:transparent;padding:6px 10px;border-radius:14px;width:100%}
+.doc-title:hover,.doc-title:focus{border-color:var(--line-strong);background:var(--sunken)}
+.doc-meta{color:var(--muted);border:1px solid transparent;background:transparent;padding:4px 10px;border-radius:14px;width:100%}
+.doc-meta:hover,.doc-meta:focus{border-color:var(--line-strong);background:var(--sunken)}
+.doc h2{font:600 22px/1.25 var(--serif);letter-spacing:-.01em;margin:18px 10px 0;color:var(--accent-text)}
+.doc textarea{border:1px solid transparent;background:transparent;font-size:17px;line-height:1.65;padding:6px 10px;min-height:60px;resize:none;overflow:hidden}
+.doc textarea:hover,.doc textarea:focus{border-color:var(--line-strong);background:var(--sunken)}
+.side{background:var(--rail);border-left:1px solid var(--line);padding:26px;display:flex;flex-direction:column;gap:20px}
+.todo-list{display:grid;gap:8px}
+.todo-list li{font-size:14px;padding:9px 12px;border-radius:12px;background:var(--amber-bg);color:var(--amber-ink);border:1px solid var(--amber-line)}
+
+dialog{max-width:560px;width:calc(100% - 32px);border:1px solid var(--line-strong);border-radius:22px;background:var(--raised);color:var(--ink);padding:28px}
+dialog::backdrop{background:rgba(3,5,9,.72)}
+dialog h2{font:600 26px/1.15 var(--serif);letter-spacing:-.02em;margin-bottom:12px}
+dialog p,dialog li{font-size:15px;margin-bottom:8px}
+dialog ul{list-style:disc;padding-left:20px;margin-bottom:12px}
+
+@media (max-width:1080px){
+  :root{--frame:0px}
+  #app{border-radius:0}
+  .work,.two{display:block;overflow:auto}
+  .work>*,.two>*{overflow:visible}
+  .rail{border-right:0;border-bottom:1px solid var(--line)}
+  .pv,.side{border-left:0;border-top:1px solid var(--line)}
+  .opts{grid-template-columns:1fr}
+  .flow-row{grid-template-columns:1fr 1fr;gap:14px}
+  .fstep:not(:last-child)::after{display:none}
+  .hdr{padding:0 14px;gap:10px}.mode{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div id="app"></div>
+<div id="live" class="sr" role="status" aria-live="polite"></div>
+<dialog id="aboutDlg" aria-labelledby="aboutH">
+  <h2 id="aboutH">About this prototype</h2>
+  <ul>
+    <li>The coaching, previews and hiring-manager check are written by Claude as you type your answers.</li>
+    <li>Your text is sent to Claude to do that, so remove confidential details first.</li>
+    <li>Reading a Figma link is simulated with sample project content. Your real file is not read.</li>
+    <li>Your progress is saved in this browser only. Use Save and exit to leave and come back.</li>
+    <li>The coach never adds metrics, outcomes, decisions or quotes you didn’t write.</li>
+  </ul>
+  <div class="btnrow"><button class="btn primary" data-act="close-about">Close</button></div>
+</dialog>
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var nl=function(s){return esc(s).replace(/\n/g,'<br>')};
+var trunc=function(s,n){s=String(s||'');return s.length>n?s.slice(0,n-1)+'…':s};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+var words=function(s){var t=String(s||'').trim();return t?t.split(/\s+/).length:0};
+
+/* ---------- content ---------- */
+var SECTIONS=[
+ {id:'context',label:'Project context'},
+ {id:'decisions',label:'Key decisions'},
+ {id:'tradeoffs',label:'Trade-offs'},
+ {id:'contribution',label:'Your contribution'},
+ {id:'impact',label:'Impact and evidence'}
+];
+var QUESTIONS=[
+ {id:'q1',sec:'context',short:'Project and role',block:'The project',
+  title:'What was the project, and what was your role?',
+  help:'Name the product, who it was for, how long it ran, and your part on the team.',
+  ph:'The project was…',
+  empty:'Name the product, who it was for, how long it ran and your role.',emptyShort:'the project, your role and the timeline',
+  fu:'Who was it for, and how long did it run?',
+  chips:[['Who was it for?','It was for '],['How long did it run?','It ran for '],['Who was on the team?','The team was ']]},
+ {id:'q2',sec:'context',short:'The problem',block:'The challenge',
+  title:'What problem were you trying to solve, and for whom?',
+  help:'Describe what you or others noticed, who was affected, and why it mattered.',
+  ph:'People were struggling with…',
+  empty:'Describe the problem, who had it, and why it mattered.',emptyShort:'the problem and who had it',
+  fu:'Who had this problem, and how did you know?',
+  chips:[['What did people do instead?','Instead, people '],['How did you find out?','We found out because '],['What was at stake?','What was at stake was ']]},
+ {id:'q3',sec:'decisions',short:'What you learned',block:'What I learned',
+  title:'What did you learn that changed how you saw the problem?',
+  help:'Point to something you saw, heard or measured, not something you assumed.',
+  ph:'I learned that…',
+  empty:'Share one thing you saw or heard that changed your view.',emptyShort:'what you learned that changed your view',
+  fu:'What did you see or hear that told you this?',
+  chips:[['What surprised you?','What surprised me was '],['Who did you learn it from?','I learned it from '],['What did you assume before?','Before that, I assumed ']]},
+ {id:'q4',sec:'decisions',short:'The key decision',block:'The key decision',
+  title:'What decision changed the direction of the project?',
+  help:'Focus on what you noticed, the options you considered, and why you chose one path over another.',
+  ph:'The decision was…',
+  empty:'Describe the decision, what led to it, and why you chose it.',emptyShort:'the decision that changed direction and why',
+  fu:'What evidence made you choose this over the alternatives?',
+  chips:[['What evidence changed your mind?','The evidence that changed my mind was '],['What alternatives did you reject?','The alternatives I rejected were '],['What was your role?','My role in the decision was ']]},
+ {id:'q5',sec:'tradeoffs',short:'Options set aside',block:'Options I set aside',
+  title:'Which options did you consider and set aside, and why?',
+  help:'Two or three is plenty. Say what each would have cost or risked.',
+  ph:'I also considered…',
+  empty:'Name the options you set aside and what each would have cost.',emptyShort:'the options you set aside and why',
+  fu:'What would the option you set aside have cost or risked?',
+  chips:[['What was the tempting option?','The tempting option was '],['Why did it lose?','It lost because '],['Who disagreed?','The person who disagreed was ']]},
+ {id:'q6',sec:'tradeoffs',short:'What you gave up',block:'What I gave up',
+  title:'What did you give up, or what constraint shaped the choice?',
+  help:'Time, engineering effort, scope, data, politics. Trade-offs show judgment.',
+  ph:'The constraint was…',
+  empty:'Say what you traded away, or what limited your options.',emptyShort:'what you gave up or what constrained you',
+  fu:'What did you have to cut or accept to make this work?',
+  chips:[['What did engineering push back on?','Engineering pushed back on '],['What did you cut?','I cut '],['What would you do with more time?','With more time, I would ']]},
+ {id:'q7',sec:'contribution',short:'Your contribution',block:'My contribution',
+  title:'What did you personally own or drive?',
+  help:'Separate what you did from what the team did. Use “I” for your part.',
+  ph:'I personally…',
+  empty:'Say what you personally proposed, decided, built or led.',emptyShort:'what you personally did',
+  fu:'Which part did you do yourself, rather than with the team?',
+  chips:[['What did I propose?','I proposed '],['What did I decide myself?','I decided '],['Who did I persuade, and how?','I persuaded ']]},
+ {id:'q8',sec:'impact',short:'What changed',block:'What changed',nodata:true,
+  title:'What changed after the work shipped?',
+  help:'Behavior, numbers, feedback, or decisions others made because of it. If it never shipped, say what happened instead.',
+  ph:'After it shipped…',
+  empty:'Add what changed after launch, or describe the strongest signal honestly if outcome data is unavailable.',emptyShort:'what changed after launch, or what you couldn’t measure',
+  noDataLine:'I don’t have outcome data for this project yet.',
+  fu:'Who noticed the change, and how did they tell you?',
+  chips:[['What did people start doing?','People started '],['What did support or sales say?','Support told me '],['What changed for the business?','For the business, ']]},
+ {id:'q9',sec:'impact',short:'How you know',block:'How I know',nodata:true,
+  title:'How do you know, and what don’t you know?',
+  help:'Name the source of each claim. It is fine to say what you could not measure.',
+  ph:'I know this because… I don’t know…',
+  empty:'Name where each claim comes from, and what you couldn’t measure.',emptyShort:'where your claims come from and what you don’t know',
+  noDataLine:'I haven’t been able to verify the results yet.',
+  fu:'Where did that come from: a number, a person, a test?',
+  chips:[['Where did the number come from?','The number came from '],['What is only a signal?','This is only a signal: '],['What would I measure next time?','Next time I would measure ']]}
+];
+var QIDS=QUESTIONS.map(function(q){return q.id});
+var LENSES={thinking:'Product thinking',contribution:'Personal contribution',evidence:'Impact and evidence',clarity:'Clarity'};
+
+var EXAMPLE_NOTES=['Project: mobile ticketing redesign','',"Problem from support: riders buy twice because they can't tell if a ticket is active.",'','My role: planned 5 usability sessions, synthesized findings, worked with PM + 2 engineers.','','Options:','- add onboarding tutorial','- put ticket status on home','- send push notification','','We chose home-screen status after testing. Less explanation, more confidence.','',"Launch notes: support said duplicate-purchase tickets went down, but I don't have the number. Ask Maya?",'','TODO: add what engineering pushed back on; show first wireframe.'].join('\n');
+var EXAMPLE_THIN='Redesigned the checkout flow. Made it cleaner and easier to use. Users liked it.';
+var FIGMA_SAMPLE=['Figma file: Transit ticketing redesign (sample content)','Pages: Research, Explorations, Final flows, Launch notes','','Research page, sticky notes:','- Usability test, round 1: 5 riders, buying and using a day pass on the current app.','- 4 of 5 riders asked "is my ticket active?" after paying. Nobody struggled with the payment form itself.','- Support tickets: duplicate purchases are the top complaint this quarter.','','Explorations page:','- Option A: onboarding tutorial explaining payment and activation','- Option B: persistent active-ticket status on the home screen','- Option C: push notification after purchase','- Decision note: going with B. A adds explanation for a problem that is about visibility. C does not help when notifications are off.','- Engineering comment: live status needs an offline state. Agreed to ship a cached status with a "last updated" time.','','Final flows page:','- Flow: Home > Active ticket card > Ticket details','- Team: 1 designer, 1 PM, 2 engineers. 8 weeks from kickoff to launch.','','Launch notes page:','- Support lead comment: "Duplicate purchases look lower since launch, will pull numbers."','- No analytics numbers added yet.'].join('\n');
+
+var icon={
+ check:'<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ notes:'<svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="16" height="19" rx="3"/><path d="M9 9h8M9 13h8M9 17h5"/></svg>',
+ figma:'<svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15l4-4M10 11.5l-2.2 2.2a3.6 3.6 0 0 0 5.1 5.1L15 16.7M16 14.5l2.2-2.2a3.6 3.6 0 0 0-5.1-5.1L11 9.3"/></svg>',
+ pen:'<svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21l1-5L17.5 4.5a2.1 2.1 0 0 1 3 3L9 19l-4 2z"/></svg>',
+ alert:'<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 2v6M7 11v.5"/></svg>'
+};
+
+/* ---------- state ---------- */
+var KEY='case-study-coach:v1';
+function fresh(){return {v:1,stage:'start',resume:null,source:null,notes:'',title:'',meta:'',answers:{},drafts:{},cur:0,review:null,final:null,gapFocus:null,found:null,savedOn:null}}
+function loadState(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
+var S=loadState()||fresh();
+var T={startPanel:null,notesInput:'',figmaUrl:'',busy:null,err:null,coach:null,done:false,saveErr:false,confirmRestart:false,justSaved:false,ctl:null,thinInfo:null,ai:'pending',aiMsg:''};
+if(S.stage!=='start'){
+  if(Object.keys(S.answers||{}).length||S.notes){ if(S.stage!=='welcome')S.resume=S.stage; S.stage='welcome'; }
+  else S.stage='start';
+}
+var saveTimer=null;
+function save(now){
+  clearTimeout(saveTimer);
+  var run=function(){try{S.savedOn=Date.now();localStorage.setItem(KEY,JSON.stringify(S));T.saveErr=false}catch(e){T.saveErr=true}paintSaved()};
+  if(now)run();else saveTimer=setTimeout(run,300);
+}
+function paintSaved(){var el=$('#savedStatus');if(!el)return;el.textContent=T.saveErr?'Not saved: this browser blocks storage':'Saved in this browser';el.className='saved'+(T.saveErr?' bad':'')}
+function announce(m){var l=$('#live');if(l){l.textContent='';setTimeout(function(){l.textContent=m},30)}}
+
+/* ---------- helpers ---------- */
+var Q=function(i){return QUESTIONS[i]};
+var QI=function(id){return QIDS.indexOf(id)};
+var norm=function(s){return String(s||'').toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/\s+/g,' ').trim()};
+var containsNorm=function(hay,needle){return !!needle&&norm(hay).indexOf(norm(needle))>-1};
+var nums=function(s){return (String(s||'').match(/\d+(?:[.,]\d+)?/g)||[]).map(function(x){return x.replace(',','.')})};
+function numbersOK(out){var src=Array.prototype.slice.call(arguments,1).join(' ');var pool={};nums(src).forEach(function(n){pool[n]=1});return nums(out).every(function(n){return pool[n]})}
+function answered(a){return a&&(a.status==='answered'||a.status==='nodata')}
+function score(a){
+  if(!a||a.status==='skipped')return 0;
+  if(a.status==='draft')return .5;
+  if(a.status==='nodata')return a.text?1:.6;
+  var s=a.quality==='thin'?.5:1;
+  s-=.25*(a.flags||[]).filter(function(f){return f.res==='open'}).length;
+  if(a.nudge)s-=.25;
+  if(a.conflict&&!a.conflict.resolved)s=Math.min(s,.5);
+  return Math.max(.25,s);
+}
+function completeness(){return Math.round(QUESTIONS.reduce(function(t,q){return t+score(S.answers[q.id])},0)/QUESTIONS.length*100)}
+function gaps(){
+  var g=[];
+  QUESTIONS.forEach(function(q,i){
+    var a=S.answers[q.id];if(!a)return;
+    if(a.status==='skipped'){g.push({i:i,tag:'Skipped',text:q.short});return}
+    if(a.status==='draft'){g.push({i:i,tag:'Confirm notes draft',text:q.short});return}
+    if(a.conflict&&!a.conflict.resolved)g.push({i:i,tag:'Notes disagree',text:q.short});
+    if(a.nudge)g.push({i:i,tag:'Your part is unclear',text:q.short});
+    (a.flags||[]).filter(function(f){return f.res==='open'}).forEach(function(f){g.push({i:i,tag:'Needs evidence',text:q.short,detail:f.quote})});
+    if(a.quality==='thin'&&a.status==='answered')g.push({i:i,tag:'Thin answer',text:q.short});
+  });
+  return g;
+}
+function answeredCount(){return QUESTIONS.filter(function(q){return answered(S.answers[q.id])}).length}
+function firstEmpty(from){for(var k=0;k<QUESTIONS.length;k++){var j=((from||0)+k)%QUESTIONS.length;if(!S.answers[QUESTIONS[j].id])return j}return -1}
+function secOf(id){return SECTIONS.filter(function(s){return s.id===id})[0]}
+
+/* ---------- AI layer ---------- */
+var sampleFn=null;
+function initAI(){
+  if(!window.claude||!window.claude.use){T.ai='off';paintAi();return}
+  window.claude.use('sample').then(function(fn){sampleFn=fn||null;T.ai=fn?'ok':'off';paintAi()}).catch(function(){T.ai='off';paintAi()});
+}
+function paintAi(){var el=$('#aiNote');if(!el)return;el.textContent=aiText()}
+function aiText(){
+  if(T.ai==='pending')return 'Connecting to Claude…';
+  if(T.ai==='ok')return 'Claude coaches your answers and writes the previews. The first time, you’ll be asked to allow it.';
+  return 'Claude isn’t available in this view. You can still start from scratch and get basic checks, but notes can’t be read.';
+}
+function askJSON(prompt,tier,signal){
+  if(!sampleFn)return Promise.reject({code:'unavailable',message:'Claude is not available'});
+  var o={modelTier:tier};if(signal)o.signal=signal;
+  return sampleFn.json(prompt,o);
+}
+function errCopy(e){
+  var c=e&&e.code;
+  if(c==='not_granted'||c==='sampling_disabled'||c==='capability_disabled'||c==='not_declared'||c==='unavailable')return 'Claude isn’t available for this view, so I ran basic checks instead.';
+  if(c==='rate_limited')return 'Claude is busy or your usage limit was reached, so I ran basic checks. Try again in a moment.';
+  if(c==='session_expired')return 'Your session expired. Sign in again to use Claude. I ran basic checks for now.';
+  return 'Claude couldn’t check this just now, so I ran basic checks instead.';
+}
+var RULES=['You are the coaching engine inside Case Study Coach, a tool that helps early-career product designers write honest case studies.','Non-negotiable rules:','1. Use only what the designer wrote. Never invent or infer metrics, outcomes, decisions, names, dates, quotes or causes.','2. Any number or percentage in your output must appear verbatim in the designer’s text.','3. Write in first person (“I”), in the designer’s own plain words. No hype such as “successfully”, “significantly” or “impactful” unless the designer used it with evidence.','4. Keep hedges and uncertainty the designer expressed (“I think”, “roughly”, “I don’t have the number”).','5. If something is missing, say what is missing. Never fill it in.','Reply with a single JSON object and nothing else.'].join('\n');
+
+function coachPrompt(q,text){
+  var notes=S.notes?('Designer’s original notes (use only to check for contradictions):\n"""'+S.notes.slice(0,9000)+'"""'):'No notes were provided.';
+  return RULES+'\n\nQuestion asked ('+q.id+', section "'+secOf(q.sec).label+'"): '+q.title+'\nWhat a good answer contains: '+q.help+'\n\nDesigner’s answer:\n"""'+text+'"""\n\n'+notes+'\n\nReturn exactly these keys:\n{\n "quality": "strong" | "thin" | "nodata",  // thin = too vague or generic to show thinking. nodata = the designer says this information is not available.\n "followup": string | null,  // ONE specific question that refers to something they wrote. Only when quality is "thin". Max 25 words.\n "flags": [{"quote": string, "reason": string}],  // claims about outcomes, impact or user sentiment with no source or evidence in the answer. "quote" copied exactly from the answer. Max 3. reason max 14 words.\n "teamNudge": boolean,  // true only if the answer describes decisions or work mostly as "we" or "the team", so the designer’s own part is unclear\n "conflict": null | {"notesQuote": string, "answerQuote": string, "why": string},  // only a direct factual contradiction between notes and answer (different number, different option chosen, different timeline). Both quotes copied exactly. Otherwise null.\n "preview": string,  // the answer tightened into 1 to 3 sentences (max 70 words) for a case study. First person. Only facts from the answer. If nodata, state plainly what is not known.\n "meta": string | null  // only for q1: a short comma-separated line such as "Product designer, 8 weeks, team of 4" using only stated facts. Otherwise null.\n}';
+}
+function analyzePrompt(notes){
+  var list=QUESTIONS.map(function(q){return q.id+': '+q.title}).join('\n');
+  return RULES+'\n\nThe designer pasted project notes. Decide which of the nine questions the notes already answer well enough to draft from.\nQuestions:\n'+list+'\n\nReturn exactly:\n{\n "usable": boolean,  // false if the notes are too short or vague to answer any question with a real quote\n "thinReason": string,  // one plain sentence when usable is false, else ""\n "title": string | null,  // a working project name only if the notes name it, else null\n "meta": string | null,  // short comma-separated line (role, timeline, team size) only if stated, else null\n "answers": [{"qid": "q1", "covered": true, "quote": "exact snippet copied from the notes, max 240 chars", "draft": "first-person draft using only facts in the quote, max 60 words"}]\n}\nOnly include a question when the notes contain a real, specific answer. Prefer leaving a question out to stretching. Keep hedges such as “I don’t have the number” in the draft. The quote must be copied exactly from the notes.\n\nNotes:\n"""'+notes.slice(0,12000)+'"""';
+}
+function reviewPrompt(text){
+  return 'You are a hiring manager reviewing a junior product designer’s case study. Be kind and direct. Judge only what is written. Text in [square brackets] marks gaps the designer already knows about. Never suggest inventing data; if outcomes are missing, suggest honest alternatives such as a credible proxy or saying what is unknown. Reply with a single JSON object and nothing else.\n\nCase study:\n"""'+text+'"""\n\nLenses: thinking = does it show how they reasoned about the problem, options and trade-offs; contribution = can I tell what this person did versus the team; evidence = are outcomes specific, sourced and honest about what is unknown; clarity = is it easy to follow and scan.\n\nReturn exactly:\n{\n "summary": string,  // max 2 sentences, first person as the reviewer\n "lenses": [{"id": "thinking" | "contribution" | "evidence" | "clarity", "rating": "strong" | "mixed" | "weak" | "unknown", "note": string}],  // one per lens, note max 25 words and refers to specific content\n "gaps": [{"title": string, "why": string, "qid": "q1".."q9", "lens": "thinking" | "contribution" | "evidence" | "clarity"}]  // at most 3, most important first. title is an imperative, max 10 words. why max 25 words. qid is the interview question whose answer would fix it.\n}';
+}
+
+function localCheck(q,text){
+  var w=words(text);
+  var sentences=text.match(/[^.!?\n]+[.!?]*/g)||[text];
+  var flags=[];
+  if(['q3','q4','q8','q9'].indexOf(q.id)>-1){
+    sentences.forEach(function(s){
+      if(/\b(increas|decreas|reduc|improv|boost|grew|doubl|halv|drop|lift|success|loved|liked|great|significant|dramatic|everyone)\w*/i.test(s)&&!/\d/.test(s)&&!/\b(because|after|survey|analytics|data|support|interview|session|feedback|test)/i.test(s))
+        flags.push({quote:s.trim(),reason:'States a result without saying where it comes from.'});
+    });
+  }
+  var we=(text.match(/\b(we|our|the team)\b/gi)||[]).length,me=(text.match(/\b(i|my|me)\b/gi)||[]).length;
+  var noData=/\b(don'?t|do not|didn'?t|no)\b[^.]{0,30}\b(have|know|measure|track|data|number)/i.test(text)||/\bno data\b|\bunknown\b/i.test(text);
+  return {quality:noData&&q.nodata?'nodata':(w<12?'thin':'strong'),followup:w<12?q.fu:null,flags:flags.slice(0,3),teamNudge:(q.id==='q4'||q.id==='q7')&&we>=2&&me===0,conflict:null,preview:text,meta:null};
+}
+
+/* ---------- views ---------- */
+function hdr(mode){
+  var brand='<div class="brand"><svg class="logo" aria-hidden="true" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor"/><path d="M7.5 9h9M7.5 12.5h9M7.5 16h5.5" stroke="var(--on-accent)" stroke-width="1.8" stroke-linecap="round"/></svg><span>Case Study Coach</span></div>';
+  if(mode==='lite')return '<header class="hdr">'+brand+'<div class="hdr-r"><button class="btn ghost small" data-act="about">About this prototype</button></div></header>';
+  var label={interview:'Guided interview',review:'Hiring-manager check',final:'Your case study',readout:'Notes readout'}[S.stage]||'';
+  return '<header class="hdr">'+brand+'<span class="vr" aria-hidden="true"></span><div class="title-wrap"><label class="sr" for="titleInput">Case study title</label><input id="titleInput" class="title-input" data-bind="title" value="'+esc(S.title)+'" placeholder="Untitled case study" maxlength="90" autocomplete="off"></div><div class="hdr-r"><span class="mode">'+label+'</span><span class="saved" id="savedStatus"></span><button class="btn small" data-act="exit">Save and exit</button><button class="btn ghost small" data-act="about">About</button></div></header>';
+}
+
+function flowHTML(){
+  var st=[['Start','From notes, a Figma link, or from scratch'],['Interview','One question at a time, with a live preview'],['Progress','Completeness % and the gaps still open'],['Review','A hiring-manager check before export']];
+  return '<div class="flow"><p class="eyebrow cy">How it works</p><ol class="flow-row">'+st.map(function(x,i){return '<li class="fstep'+(i===0?' on':'')+'"><b>'+x[0]+'</b><span>'+x[1]+'</span></li>'}).join('')+'</ol></div>';
+}
+function startView(){
+  var p=T.startPanel,busy=T.busy;
+  var opt=function(act,ic,t,d,on){return '<button class="opt'+(on?' on':'')+'" data-act="'+act+'"'+(on!==undefined&&act!=='pick-scratch'?' aria-expanded="'+on+'"':'')+(busy?' disabled':'')+'><span class="opt-ic">'+icon[ic]+'</span><span class="opt-t">'+t+'</span><span class="opt-d">'+d+'</span></button>'};
+  var panel='';
+  if(busy==='analyze'||busy==='figma'){
+    panel='<div class="loading" role="status" aria-live="polite" style="margin-top:16px"><span class="spin" aria-hidden="true"></span><div><strong>'+(busy==='figma'?'Reading the Figma project…':'Reading your notes…')+'</strong><p>I’m looking for what they already answer. This can take up to a minute.</p></div><button class="btn small" data-act="cancel-busy" style="margin-left:auto">Cancel</button></div>';
+  }else if(p==='notes'){
+    panel='<div class="panel"><label class="lbl" for="notesInput">Your project notes</label><p class="hint" id="notesHint">Paste rough notes, doc text or comments. Keep names and results accurate. Remove confidential details first, because the text is sent to Claude to draft from.</p><textarea id="notesInput" rows="9" data-bind="notesInput" aria-describedby="notesHint notesErr">'+esc(T.notesInput)+'</textarea><div class="row between" style="margin-top:6px"><span class="count" id="notesCount">'+words(T.notesInput)+' words</span><span class="count">Try <button class="link" data-act="example-notes">example notes</button> or <button class="link" data-act="example-thin">a very short note</button></span></div><p class="err" id="notesErr" role="alert">'+esc(T.err||'')+'</p><div class="btnrow" style="margin-top:12px"><button class="btn primary" data-act="analyze-notes">Read my notes</button></div></div>';
+  }else if(p==='figma'){
+    panel='<div class="panel"><label class="lbl" for="figmaInput">Figma file or frame link</label><p class="hint" id="figmaHint">Paste a link to the project you want to write about.</p><input id="figmaInput" type="url" data-bind="figmaUrl" value="'+esc(T.figmaUrl)+'" placeholder="https://www.figma.com/design/…" aria-describedby="figmaHint figmaErr" autocomplete="off"><div class="row" style="margin-top:6px"><span class="count">Try <button class="link" data-act="example-figma">a sample link</button> or <button class="link" data-act="example-figma-private">a private file link</button></span></div><p class="err" id="figmaErr" role="alert">'+esc(T.err||'')+'</p><div class="banner">Prototype note: reading Figma is simulated. Any valid link loads sample project content (a transit ticketing redesign), not your file.</div><div class="btnrow" style="margin-top:12px"><button class="btn primary" data-act="analyze-figma">Read the Figma project</button></div></div>';
+  }
+  return '<main id="main" class="page start" tabindex="-1"><div class="narrow"><div class="rule" aria-hidden="true"></div><p class="eyebrow" style="margin-bottom:10px">Case study coach · Start here</p><h1 id="focusTarget" tabindex="-1">Turn your project into a case study that shows how you think</h1><p class="lede">I’ll ask one question at a time and build your case study beside your answers. I only use what you tell me, and I’ll flag anything that needs evidence.</p><div class="opts" role="group" aria-label="How do you want to begin?">'+opt('pick-notes','notes','Paste project notes','Rough notes, doc text or comments. I’ll draft answers from them and skip what they already cover.',p==='notes')+opt('pick-figma','figma','Add a Figma link','I’ll read the project and pre-fill what I can.',p==='figma')+opt('pick-scratch','pen','Start from scratch','Nothing to paste yet? I’ll ask everything, one question at a time.')+'</div>'+panel+flowHTML()+'<p class="ainote" id="aiNote">'+esc(aiText())+'</p></div></main>';
+}
+
+function thinView(){
+  var t=T.thinInfo||{reason:'',found:0};
+  return '<main id="main" class="page" tabindex="-1"><div class="narrow"><h1 id="focusTarget" tabindex="-1">These notes are too short to draft from</h1><p class="lede">'+esc(t.reason||'I couldn’t find a specific answer to any of the questions, and I won’t guess.')+'</p><div class="note teal" style="margin-top:20px"><h4>Nothing was pre-filled</h4><p>I’d rather ask than invent. You can add more detail, or I can ask you everything and use these notes only to check your answers.</p></div><div class="btnrow" style="margin-top:20px"><button class="btn primary" data-act="thin-more">Add more notes</button><button class="btn" data-act="thin-scratch">Start from scratch</button></div></div></main>';
+}
+
+function readoutView(){
+  var covered=QUESTIONS.filter(function(q){var a=S.answers[q.id];return a&&a.origin!=='answer'&&(a.status==='draft'||a.status==='answered')});
+  var todo=QUESTIONS.filter(function(q){return !S.answers[q.id]});
+  var src=S.source==='figma'?'Figma project':'notes';
+  var items=covered.map(function(q){
+    var a=S.answers[q.id],i=QI(q.id);
+    return '<li class="ro-item"><h3>Question '+(i+1)+': '+esc(q.short)+'</h3><p class="ro-quote"><span class="sr">From your '+src+': </span>“'+esc(a.quote||'')+'”</p><label class="sr" for="ro-'+q.id+'">Draft answer for '+esc(q.short)+'</label><textarea id="ro-'+q.id+'" data-bind="readout" data-q="'+q.id+'">'+esc(a.text)+'</textarea><label class="chk"><input type="checkbox" data-act="toggle-confirm" data-q="'+q.id+'"'+(a.status==='answered'?' checked':'')+'> Looks right</label></li>';
+  }).join('');
+  var todoHtml=todo.length?'<li class="ro-item todo"><h3>Still to ask ('+todo.length+')</h3><p class="sm muted" style="margin-top:4px">'+todo.map(function(q){return esc(q.short)}).join(', ')+'.</p></li>':'';
+  return '<main id="main" class="page" tabindex="-1"><div class="narrow"><h1 id="focusTarget" tabindex="-1">Here’s what your '+src+' already cover</h1><p class="lede">I drafted these in your words, using only what’s written. Confirm what’s right and edit the rest. Confirmed questions get skipped.</p>'+(S.source==='figma'?'<div class="banner">Prototype note: this is sample project content, not your Figma file.</div>':'')+'<div class="stats"><div class="stat"><b>'+covered.length+' of 9</b><span>questions covered</span></div><div class="stat"><b>'+completeness()+'%</b><span>complete so far</span></div><div class="stat"><b>'+todo.length+'</b><span>still to ask</span></div></div><ul class="readout-grid">'+items+todoHtml+'</ul><div class="btnrow" style="margin-top:22px"><button class="btn primary" data-act="readout-continue">Continue to the questions</button></div></div></main>';
+}
+
+function welcomeView(){
+  var g=gaps().length,sk=QUESTIONS.filter(function(q){var a=S.answers[q.id];return a&&a.status==='skipped'}).length;
+  var when=S.savedOn?new Date(S.savedOn).toLocaleString([], {dateStyle:'medium',timeStyle:'short'}):'';
+  var next=S.resume==='review'?'Back to the hiring-manager check':S.resume==='final'?'Back to your case study':(S.resume==='start'||S.resume==='thin'||S.resume==='readout')?'Continue':'Continue at question '+(S.cur+1);
+  return '<main id="main" class="page" tabindex="-1"><div class="narrow"><h1 id="focusTarget" tabindex="-1">'+(T.justSaved?'Saved. You can leave now.':'Welcome back')+'</h1><p class="lede">'+(T.justSaved?'Come back any time on this device and you’ll pick up where you stopped.':'Here’s where you left off on')+' '+(T.justSaved?'':'“'+esc(S.title||'Untitled case study')+'”.')+'</p><div class="stats"><div class="stat"><b>'+answeredCount()+' of 9</b><span>answered</span></div><div class="stat"><b>'+sk+'</b><span>skipped</span></div><div class="stat"><b>'+g+'</b><span>open gaps</span></div><div class="stat"><b>'+completeness()+'%</b><span>complete</span></div></div><div class="btnrow" style="margin-top:24px"><button class="btn primary" data-act="resume">'+next+'</button>'+(T.confirmRestart?'<button class="btn" data-act="restart-yes">Yes, delete my progress</button><button class="btn ghost" data-act="restart-no">Cancel</button>':'<button class="btn" data-act="restart">Start over</button>')+'</div>'+(when?'<p class="sm muted" style="margin-top:14px">Last saved '+esc(when)+' in this browser.</p>':'')+'</div></main>';
+}
+
+/* interview */
+function railHTML(){
+  var c=completeness(),g=gaps(),empt=QUESTIONS.filter(function(q){return !S.answers[q.id]}).length;
+  var mins=empt?'about '+Math.max(1,Math.round(empt*1.7))+' minutes left':'every question visited';
+  var curSec=Q(S.cur).sec;
+  var stages=SECTIONS.map(function(sec){
+    var qs=QUESTIONS.filter(function(q){return q.sec===sec.id}),st=qs.map(function(q){return S.answers[q.id]});
+    var done=st.every(answered),sk=st.filter(function(a){return a&&a.status==='skipped'}).length,dr=st.filter(function(a){return a&&a.status==='draft'}).length;
+    var isCur=curSec===sec.id&&!T.done;
+    var label=isCur?'Current':done?'Complete':sk?sk+' skipped':dr?'Draft from notes':'Not started';
+    return '<li><button class="stage'+(done?' done':'')+(isCur?' cur':'')+'" data-act="stage-goto" data-sec="'+sec.id+'"'+(isCur?' aria-current="step"':'')+'><span class="mk" aria-hidden="true">'+(done?icon.check:(isCur?'<i class="dotfill"></i>':''))+'</span><span><span class="st-n">'+sec.label+'</span><span class="st-s">'+label+'</span></span></button></li>';
+  }).join('');
+  var gl=g.length?'<ul class="gaps">'+g.map(function(x){return '<li><button class="gap" data-act="gap-goto" data-i="'+x.i+'"><span class="gap-tag">'+esc(x.tag)+'</span><span class="gap-q">Question '+(x.i+1)+': '+esc(x.text)+'</span>'+(x.detail?'<span class="gap-d">“'+esc(trunc(x.detail,50))+'”</span>':'')+'</button></li>'}).join('')+'</ul>':'<p class="sm muted">No gaps yet. Skipped, thin or unsupported answers will show up here.</p>';
+  var ready=answeredCount()>=3;
+  return '<div class="rail-sec"><p class="cap">Completeness</p><p class="big" id="pct">'+c+'%</p><div class="bar" role="progressbar" aria-label="Completeness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+c+'"><span style="width:'+c+'%"></span></div><p class="sm muted">A coaching signal, not a score. '+empt+' '+(empt===1?'question':'questions')+' still to ask, '+mins+'.</p></div><div class="rail-sec"><h2 class="h-sm">Sections</h2><ol class="stages">'+stages+'</ol></div><div class="rail-sec"><h2 class="h-sm">Open gaps <span class="count-pill" aria-label="'+g.length+' open gaps">'+g.length+'</span></h2>'+gl+'</div><div class="honest"><b>Keep it honest</b><p>The coach flags claims that need evidence. It never invents results.</p></div><button class="btn block" data-act="open-review"'+(ready?'':' aria-disabled="true"')+'>Run the hiring-manager check</button>'+(ready?'':'<p class="sm muted" style="margin-top:-12px">Answer at least 3 questions first.</p>');
+}
+function statusWord(a){if(!a)return 'not started';if(a.status==='skipped')return 'skipped';if(a.status==='draft')return 'draft from notes';return 'answered'}
+function centerHTML(){
+  if(T.done){
+    var g=gaps().length;
+    return '<div class="center-in"><h2 class="q-title" id="focusTarget" tabindex="-1">That’s all nine questions</h2><p class="q-help">Completeness is '+completeness()+'%, with '+g+' open '+(g===1?'gap':'gaps')+'. The hiring-manager check reads your case study the way a reviewer would and points to the three gaps that matter most.</p><div class="btnrow"><button class="btn primary" data-act="open-review">Run the hiring-manager check</button><button class="btn" data-act="keep-editing">Keep editing</button></div></div>';
+  }
+  var i=S.cur,q=Q(i),a=S.answers[q.id],sec=secOf(q.sec);
+  var pct=Math.round((i+1)/QUESTIONS.length*100);
+  var val=S.drafts[q.id]!==undefined?S.drafts[q.id]:(a?a.text:'');
+  var dots=QUESTIONS.map(function(qq,k){var st=S.answers[qq.id];var cls='dot'+(k===i?' cur':st&&st.status==='skipped'?' skip':st?' ans':'');return '<button class="'+cls+'" data-act="goto" data-i="'+k+'" aria-label="Question '+(k+1)+': '+esc(qq.short)+', '+statusWord(st)+'"'+(k===i?' aria-current="step"':'')+'>'+(k+1)+'</button>'}).join('');
+  var gf=S.gapFocus?'<div class="note teal"><h4>From your review: '+esc(S.gapFocus.title)+'</h4><p>'+esc(S.gapFocus.why)+'</p><div class="btnrow"><button class="btn small" data-act="back-review">Back to the review</button></div></div>':'';
+  var draftNote=(a&&a.status==='draft')?'<div class="note teal"><h4>From your '+(a.origin==='figma'?'Figma file':'notes')+'</h4><p class="quote">“'+esc(a.quote||'')+'”</p><p>I drafted the answer below in your words. Check it, edit it, then confirm.</p></div>':'';
+  var chips=q.chips.map(function(c){return '<button class="chip" data-act="chip" data-starter="'+esc(c[1])+'">'+esc(c[0])+'</button>'}).join('');
+  var nd='';
+  if(q.nodata){nd=(a&&a.status==='nodata')?'<button class="btn small" data-act="nodata-undo">Undo: I do have something</button>':'<button class="btn small" data-act="nodata">I don’t have this data</button>'}
+  return '<div class="center-in"><div><div class="qprog"><span>'+esc(sec.label)+', question '+(i+1)+' of 9</span><span>'+pct+'%</span></div><div class="bar" role="progressbar" aria-label="Question progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+pct+'"><span style="width:'+pct+'%"></span></div><div class="stepper" role="group" aria-label="Jump to a question">'+dots+'</div></div>'+gf+'<div><p class="coachsays">Coach asks</p><h2 class="q-title" id="focusTarget" tabindex="-1">'+esc(q.title)+'</h2><p class="q-help" id="qhelp" style="margin-top:8px">'+esc(q.help)+'</p></div>'+draftNote+'<div><label class="lbl" for="answer">Your answer</label><textarea id="answer" data-bind="answer" placeholder="'+esc(q.ph)+' Rough is fine, in your own words." aria-describedby="qhelp coachArea">'+esc(val)+'</textarea><div class="row between" style="margin-top:6px"><span class="count" id="ansCount">'+words(val)+' words</span><span class="count">Ctrl or ⌘ + Enter to save</span></div><p class="err" id="ansErr" role="alert"></p></div><div><p class="h-sm" style="margin-bottom:8px">Useful prompts</p><div class="chips">'+chips+'</div>'+(nd?'<div style="margin-top:10px">'+nd+'</div>':'')+'</div><div id="coachArea" aria-live="polite">'+coachHTML()+'</div><div class="actions"><div class="btnrow">'+(i>0?'<button class="btn ghost" data-act="prev">Previous</button>':'')+'<button class="btn" data-act="skip">Skip for now</button></div><button class="btn primary" id="saveBtn" data-act="save">'+saveLabel()+'</button></div></div>';
+}
+function isDirty(){var ta=$('#answer');if(!ta)return false;var a=S.answers[Q(S.cur).id];return ta.value.trim()!==((a&&a.text)||'')}
+function saveLabel(){
+  var c=T.coach&&T.coach.qid===Q(S.cur).id&&!T.coach.loading;
+  var d=false;try{d=isDirty()}catch(e){}
+  if(T.coach&&T.coach.loading)return 'Checking…';
+  var a=S.answers[Q(S.cur).id];
+  if(c&&!d)return 'Continue to the next question';
+  if(a&&a.status==='draft'&&!d)return 'Confirm and next question';
+  return 'Save and next question';
+}
+function coachHTML(){
+  var q=Q(S.cur),a=S.answers[q.id],c=T.coach,h='';
+  if(c&&c.qid===q.id&&c.loading)return '<div class="coach loading loading"><span class="spin" aria-hidden="true"></span><p>Checking your answer against what you wrote…</p></div>';
+  if(a&&a.status==='nodata'&&q.nodata){
+    h+='<div class="note teal"><h4>Not having the data is fine. Saying so clearly is what matters.</h4><p>If you can, add one of these. Only write what is true.</p><div class="chips" style="margin-top:8px">'+[['What I do know is ','What I do know'],['The closest signal I have is ','The closest signal I have'],['I’d measure this by ','How I’d measure it'],['What I can’t say is ','What I can’t say']].map(function(x){return '<button class="chip" data-act="chip" data-starter="'+esc(x[0])+'">'+esc(x[1])+'</button>'}).join('')+'</div></div>';
+  }
+  if(!c||c.qid!==q.id||!a)return h?'<div class="coach">'+h+'</div>':'';
+  if(c.notice)h+='<p class="notice">'+esc(c.notice)+'</p>';
+  if(a.conflict&&!a.conflict.resolved){
+    h+='<div class="note violet"><h4>Your notes and this answer disagree</h4><p class="quote"><span>Your notes say</span>“'+esc(a.conflict.notesQuote)+'”</p><p class="quote"><span>Your answer says</span>“'+esc(a.conflict.answerQuote)+'”</p>'+(a.conflict.why?'<p class="sm">'+esc(a.conflict.why)+'</p>':'')+'<div class="btnrow"><button class="btn small" data-act="conflict-mine">My answer is right</button><button class="btn small" data-act="conflict-notes">My notes are right</button><button class="btn small" data-act="conflict-none">They don’t conflict</button></div><p class="sm" style="margin-top:8px">The preview holds this line until you decide.</p></div>';
+  }
+  (a.flags||[]).filter(function(f){return f.res==='open'}).forEach(function(f){
+    h+='<div class="note amber"><h4>Needs evidence</h4><p class="quote">“'+esc(f.quote)+'”</p><p class="sm">'+esc(f.reason)+' I won’t fill this in for you.</p><div class="btnrow"><button class="btn small" data-act="flag-evidence" data-fid="'+f.id+'">Add a source or number</button><button class="btn small" data-act="flag-impression" data-fid="'+f.id+'">Keep as my impression</button><button class="btn small" data-act="flag-remove" data-fid="'+f.id+'">Remove this claim</button></div></div>';
+  });
+  if(a.nudge){
+    h+='<div class="note amber"><h4>What was your part?</h4><p>This reads as the team’s work. A reviewer wants to see what you did. Start a sentence:</p><div class="chips" style="margin-top:8px">'+[['I proposed…','I proposed '],['I decided…','I decided '],['I facilitated…','I facilitated '],['I built…','I built '],['I persuaded…','I persuaded ']].map(function(x){return '<button class="chip" data-act="chip" data-starter="'+esc(x[1])+'">'+esc(x[0])+'</button>'}).join('')+'</div><div class="btnrow"><button class="btn small" data-act="nudge-shared">It really was shared equally</button></div></div>';
+  }
+  if(c.followup&&!c.followupDone){
+    h+='<div class="note teal"><h4>To make this stronger</h4><p>'+esc(c.followup)+'</p><div class="btnrow"><button class="btn small" data-act="followup-add">Add to my answer</button><button class="btn small" data-act="followup-keep">Keep as is</button></div></div>';
+  }
+  if(!h.replace(/<p class="notice">.*?<\/p>/,'').trim())h+='<p class="okline">'+icon.check+' Looks good. Your preview is updated.</p>';
+  return '<section class="coach" aria-labelledby="coachH"><h3 class="coach-h" id="coachH">Before we move on</h3>'+h+'</section>';
+}
+
+/* preview */
+function liveInfo(){
+  if(S.stage!=='interview'||T.done)return null;
+  var ta=$('#answer');if(!ta)return null;
+  var q=Q(S.cur),a=S.answers[q.id];
+  var v=ta.value.trim();
+  if(!v||v===((a&&a.text)||''))return null;
+  return {qid:q.id,text:v};
+}
+function blockHTML(q,i,live,isCur){
+  var a=S.answers[q.id],state,text='',tag='',extra='';
+  var lv=live&&live.qid===q.id?live.text:null;
+  if(lv){state='live';text=lv;tag='Drafting, in your words'}
+  else if(!a)state='empty';
+  else if(a.status==='skipped')state='skipped';
+  else if(a.status==='nodata'){state='done';text=a.text?(a.preview||a.text):q.noDataLine;tag=a.text?'From your answer '+(i+1):'You said this isn’t available'}
+  else if(a.status==='draft'){state='draft';text=a.preview||a.text;tag='From your '+(a.origin==='figma'?'Figma file':'notes')+', not confirmed'}
+  else{state='done';text=a.preview||a.text;tag=a.origin==='notes'?'From your notes, confirmed':a.origin==='figma'?'From your Figma file, confirmed':'From your answer '+(i+1)}
+  if(a&&a.conflict&&!a.conflict.resolved&&state!=='live')state='hold';
+  var cls='pv-block'+(isCur?' cur':'')+(state==='empty'?' empty':'')+(state==='skipped'?' skipped':'')+(state==='hold'?' hold':'');
+  var head='<div class="pv-head"><h4>'+esc(q.block)+'</h4>'+(tag&&state!=='hold'?'<span class="src">'+esc(tag)+'</span>':'')+'</div>';
+  var id=' id="pv-'+q.id+'"';
+  if(state==='empty')return '<section class="'+cls+'"'+id+'>'+head+'<p>'+esc(q.empty)+'</p></section>';
+  if(state==='skipped')return '<section class="'+cls+'"'+id+'>'+head+'<p>Skipped for now. Answer question '+(i+1)+' to fill this in.</p></section>';
+  if(state==='hold')return '<section class="'+cls+'"'+id+'>'+head+'<p>Waiting on you: your notes and your answer disagree. Choose which is right in the question panel.</p></section>';
+  if(a&&state!=='live'){
+    (a.flags||[]).forEach(function(f){
+      if(f.res==='open')extra+='<p class="tagline amber">'+icon.alert+' Needs evidence: “'+esc(trunc(f.quote,80))+'”</p>';
+      else if(f.res==='impression')extra+='<p class="tagline amber">Marked as your impression, not measured.</p>';
+    });
+    if(a.nudge)extra+='<p class="tagline amber">Your own part isn’t clear yet.</p>';
+    if(a.quality==='thin'&&a.status==='answered')extra+='<p class="tagline amber">Short on detail.</p>';
+    if(a.preview&&a.text&&a.preview!==a.text&&a.previewSource==='claude')extra+='<details class="orig"><summary>See my original words</summary><p>'+nl(a.text)+'</p></details>';
+  }
+  return '<section class="'+cls+'"'+id+'>'+head+'<p>'+nl(text)+'</p>'+extra+'</section>';
+}
+function docHTML(live,showCur){
+  var blocks=QUESTIONS.map(function(q,i){return blockHTML(q,i,live,showCur&&S.cur===i&&!T.done)}).join('');
+  return '<h3 class="pv-title">'+esc(S.title||'Untitled case study')+'</h3><p class="pv-meta">'+esc(S.meta||'Your role, timeline and team appear once question 1 is answered.')+'</p><hr>'+blocks;
+}
+function previewHTML(){
+  return '<div class="pv-top"><div><p class="cap">Story in progress</p><h2 class="h-md">Live case-study preview</h2></div><span class="pill">Updates live</span></div><article class="pv-doc" id="previewDoc" aria-label="Case study preview">'+docHTML(liveInfo(),true)+'</article>';
+}
+function interviewView(){
+  return '<main id="main" class="work" tabindex="-1"><nav class="rail" id="rail" aria-label="Interview progress">'+railHTML()+'</nav><section class="center" id="center" aria-label="Interview question">'+centerHTML()+'</section><aside class="pv" id="previewPane" aria-label="Case study preview">'+previewHTML()+'</aside></main>';
+}
+function paintRail(){var r=$('#rail');if(r)r.innerHTML=railHTML()}
+function paintCoach(){var c=$('#coachArea');if(c)c.innerHTML=coachHTML();var b=$('#saveBtn');if(b){b.textContent=saveLabel();b.disabled=!!(T.coach&&T.coach.loading)}}
+var pvRaf=0;
+function paintPreview(){
+  if(pvRaf)return;
+  pvRaf=requestAnimationFrame(function(){
+    pvRaf=0;
+    if(S.stage==='interview'){var p=$('#previewDoc');if(p)p.innerHTML=docHTML(liveInfo(),true)}
+    else if(S.stage==='review'){var r=$('#reviewDoc');if(r)r.innerHTML=docHTML(null,false)}
+  });
+}
+
+/* review */
+function caseText(){
+  return 'Title: '+(S.title||'Untitled')+(S.meta?'\n'+S.meta:'')+'\n\n'+QUESTIONS.map(function(q,i){
+    var a=S.answers[q.id],body;
+    if(!a)body='[not answered yet]';
+    else if(a.status==='skipped')body='[skipped]';
+    else if(a.status==='nodata'&&!a.text)body='[designer says this information is not available]';
+    else{
+      body=a.preview||a.text;
+      if(a.status==='draft')body+=' [unconfirmed draft from notes]';
+      (a.flags||[]).forEach(function(f){if(f.res==='open')body+=' [claim without evidence: "'+f.quote+'"]';else if(f.res==='impression')body+=' [designer says this is an impression, not measured]'});
+      if(a.nudge)body+=' [designer’s own part unclear]';
+      if(a.conflict&&!a.conflict.resolved)body+=' [conflicts with designer’s notes]';
+    }
+    return '('+q.id+') '+secOf(q.sec).label+' / '+q.block+': '+body;
+  }).join('\n\n');
+}
+function reviewView(){
+  var r=S.review,right='';
+  if(T.busy==='review'){
+    right='<div class="loading" role="status" aria-live="polite" style="margin-top:18px"><span class="spin" aria-hidden="true"></span><div><strong>Reading your case study like a hiring manager…</strong><p>This can take up to a minute.</p></div><button class="btn small" data-act="cancel-busy" style="margin-left:auto">Cancel</button></div>';
+  }else if(T.err&&!r){
+    right='<div class="note amber" style="margin-top:18px"><h4>The check didn’t run</h4><p>'+esc(T.err)+'</p><div class="btnrow"><button class="btn small" data-act="recheck">Try again</button><button class="btn small" data-act="back-interview">Back to the questions</button></div></div>';
+  }else if(r&&r.notEnough){
+    right='<div class="note teal" style="margin-top:18px"><h4>Not enough to judge yet</h4><p>A reviewer needs at least three answered questions to say anything useful, and I won’t score thin content. Answer these first: '+QUESTIONS.filter(function(q){return !answered(S.answers[q.id])}).slice(0,4).map(function(q){return esc(q.short)}).join(', ')+'.</p><div class="btnrow"><button class="btn primary" data-act="back-interview">Back to the questions</button></div></div>';
+  }else if(r){
+    var lens=(r.lenses||[]).map(function(l){var lab={strong:'Strong',mixed:'Mixed',weak:'Needs work',unknown:'Not enough to judge'}[l.rating]||'Not enough to judge';var rt=['strong','mixed','weak'].indexOf(l.rating)>-1?l.rating:'';return '<li class="lens"><div class="lens-h"><b>'+esc(LENSES[l.id]||l.id)+'</b><span class="pill '+rt+'">'+(l.rating==='strong'?icon.check+' ':'')+lab+'</span></div><p class="sm muted">'+esc(l.note||'')+'</p></li>'}).join('');
+    var gs=(r.gaps||[]).map(function(g,k){var qi=QI(g.qid);return '<li class="gc"><div class="gc-t"><span class="gc-n" aria-hidden="true">'+(k+1)+'</span><b>'+esc(g.title)+'</b></div><p class="sm muted">'+esc(g.why)+'</p><div class="btnrow"><button class="btn small" data-act="fix-gap" data-k="'+k+'">Fix in question '+(qi+1)+': '+esc(Q(qi).short)+'</button></div></li>'}).join('');
+    right=(r.stale?'<div class="note amber" style="margin-top:18px"><h4>You’ve changed your answers since this check</h4><div class="btnrow"><button class="btn small" data-act="recheck">Re-check now</button></div></div>':'')+'<p style="margin-top:18px;font-size:17px">'+esc(r.summary||'')+'</p><ul class="lens-grid" aria-label="Review lenses">'+lens+'</ul><h2 class="sec-h">Top gaps to fix</h2><ol class="gapcards">'+gs+'</ol><div class="btnrow" style="margin-top:22px"><button class="btn primary" data-act="to-final">See my case study</button><button class="btn" data-act="recheck">Re-check</button><button class="btn ghost" data-act="back-interview">Back to the questions</button></div>';
+  }
+  return '<main id="main" class="two" tabindex="-1"><section class="pv" style="border-left:0;border-right:1px solid var(--line)" aria-label="Your case study so far"><div class="pv-top"><div><p class="cap">Your draft</p><h2 class="h-md">Case study so far</h2></div><span class="pill">'+completeness()+'% complete</span></div><article class="pv-doc" id="reviewDoc">'+docHTML(null,false)+'</article></section><section class="side" style="background:var(--surface);border-left:0" aria-label="Hiring-manager review"><div><h1 class="h-md" id="focusTarget" tabindex="-1" style="font-size:26px">Hiring-manager check</h1><p class="sm muted" style="margin-top:4px">A reviewer’s view of what’s on the page: product thinking, contribution, evidence and clarity. It’s a heuristic, not a prediction of callbacks.</p>'+right+'</div></section></main>';
+}
+
+/* final */
+function buildFinal(){
+  var secs=QUESTIONS.map(function(q){
+    var a=S.answers[q.id],body='';
+    if(!a||a.status==='skipped')body='[Add: '+q.emptyShort+']';
+    else if(a.status==='nodata'&&!a.text)body=q.noDataLine;
+    else{
+      body=a.preview||a.text;
+      if(a.status==='draft')body+=' [Confirm: this is a draft from your '+(a.origin==='figma'?'Figma file':'notes')+']';
+      var imp=false;
+      (a.flags||[]).forEach(function(f){if(f.res==='open')body+=' [Needs evidence: “'+f.quote+'”]';else if(f.res==='impression')imp=true});
+      if(imp)body+=' (This is my impression; I haven’t measured it.)';
+      if(a.nudge)body+=' [Add: which part you did yourself]';
+      if(a.conflict&&!a.conflict.resolved)body+=' [Check: your notes and this answer disagree]';
+    }
+    return {id:q.id,heading:q.block,body:body};
+  });
+  S.final={sections:secs,edited:false,backup:null};
+}
+function finalText(){
+  var f=S.final;
+  return '# '+(S.title||'Untitled case study')+'\n\n'+(S.meta?S.meta+'\n\n':'')+f.sections.map(function(s){return '## '+s.heading+'\n\n'+s.body.trim()}).join('\n\n')+'\n';
+}
+function todoItems(){return (finalText().match(/\[(?:Add|Needs|Confirm|Check)[^\]]*\]/g)||[])}
+function finalView(){
+  var f=S.final;
+  var secs=f.sections.map(function(s,k){return '<h2>'+esc(s.heading)+'</h2><label class="sr" for="fs-'+k+'">'+esc(s.heading)+'</label><textarea id="fs-'+k+'" data-bind="final" data-k="'+k+'">'+esc(s.body)+'</textarea>'}).join('');
+  return '<main id="main" class="two" tabindex="-1"><section class="pv" style="border-left:0;background:var(--surface);padding:32px 28px" aria-label="Your case study"><div class="doc"><h1 class="sr" id="focusTarget" tabindex="-1">Your case study</h1><label class="sr" for="docTitle">Title</label><input id="docTitle" class="doc-title" data-bind="title" value="'+esc(S.title)+'" placeholder="Untitled case study" maxlength="90"><label class="sr" for="docMeta">Role, timeline and team</label><input id="docMeta" class="doc-meta" data-bind="meta" value="'+esc(S.meta)+'" placeholder="Role, timeline, team size">'+secs+'</div></section><aside class="side" aria-label="Before you use this">'+finalSide()+'</aside></main>';
+}
+function finalSide(){
+  var td=todoItems();
+  return '<div><h2 class="h-md">Review, edit, copy</h2><p class="sm muted" style="margin-top:4px">Everything here comes from your answers. Edit any text directly.</p></div><div><h3 class="h-sm">Before you use this ('+td.length+')</h3>'+(td.length?'<ul class="todo-list">'+td.slice(0,8).map(function(t){return '<li>'+esc(trunc(t,90))+'</li>'}).join('')+'</ul><p class="sm muted" style="margin-top:8px">Fix or delete each bracketed note. You can still copy with them in.</p>':'<p class="okline">'+icon.check+' No open notes. Read it once more, then copy it.</p>')+'</div><div class="btnrow"><button class="btn primary" data-act="copy">Copy case study</button><button class="btn" data-act="download">Download .md</button></div><p class="sm" id="finalMsg" role="status"></p><div><h3 class="h-sm">Smooth the writing</h3><p class="sm muted">Claude edits for flow only. It can’t add facts or numbers, and it keeps your bracketed notes.</p><div class="btnrow" style="margin-top:8px"><button class="btn small" data-act="smooth">Smooth the writing</button>'+(S.final.backup?'<button class="btn small ghost" data-act="undo-smooth">Undo smoothing</button>':'')+'</div></div><div class="btnrow" style="margin-top:auto"><button class="btn small" data-act="back-interview">Back to the questions</button><button class="btn small" data-act="open-review">Run the check again</button>'+(S.final.edited?'<button class="btn small ghost" data-act="rebuild">Rebuild from my answers</button>':'')+'</div>';
+}
+
+/* ---------- render ---------- */
+function render(opt){
+  opt=opt||{};
+  var app=$('#app'),h='';
+  switch(S.stage){
+    case 'start':h=hdr('lite')+startView();break;
+    case 'thin':h=hdr('lite')+thinView();break;
+    case 'readout':h=hdr('full')+readoutView();break;
+    case 'interview':h=hdr('full')+interviewView();break;
+    case 'review':h=hdr('full')+reviewView();break;
+    case 'final':h=hdr('full')+finalView();break;
+    case 'welcome':h=hdr('lite')+welcomeView();break;
+    default:S.stage='start';h=hdr('lite')+startView();
+  }
+  app.innerHTML=h;
+  paintSaved();
+  var main=$('#main');if(main)main.id='main';
+  if(opt.focus!==false){var f=$('#focusTarget');if(f&&f.focus)f.focus()}
+  if(S.stage==='interview'&&!T.done){
+    var cur=$('#pv-'+Q(S.cur).id);if(cur&&cur.scrollIntoView)cur.scrollIntoView({block:'nearest'});
+    var c=$('#center');if(c&&opt.focus!==false)c.scrollTop=0;
+  }
+  if(S.stage==='final')$$('.doc textarea').forEach(autosize);
+}
+function autosize(t){t.style.height='auto';t.style.height=(t.scrollHeight+4)+'px'}
+function go(focus){save();render({focus:focus!==false})}
+
+/* ---------- actions ---------- */
+function startInterview(){S.stage='interview';T.done=false;var e=firstEmpty(0);S.cur=e<0?0:e;if(e<0)T.done=true;T.coach=null;go()}
+function cancelCtl(){if(T.ctl){try{T.ctl.abort()}catch(e){}T.ctl=null}}
+
+function analyze(notesText,origin){
+  cancelCtl();T.ctl=typeof AbortController!=='undefined'?new AbortController():null;
+  T.busy=origin==='figma'?'figma':'analyze';T.err=null;render({focus:false});
+  var ctl=T.ctl;
+  askJSON(analyzePrompt(notesText),'default',ctl&&ctl.signal).then(function(res){
+    if(T.busy===null)return;
+    T.busy=null;T.ctl=null;
+    S.notes=notesText;S.source=origin;S.answers={};S.drafts={};
+    var n=0;
+    ((res&&res.answers)||[]).forEach(function(x){
+      if(!x||QIDS.indexOf(x.qid)<0||!x.covered||!x.quote||!x.draft)return;
+      if(!containsNorm(notesText,x.quote))return;
+      if(!numbersOK(x.draft,x.quote))return;
+      S.answers[x.qid]={status:'draft',text:String(x.draft).trim(),preview:String(x.draft).trim(),origin:origin,quote:String(x.quote).trim().slice(0,260),quality:null,flags:[],nudge:false,conflict:null,checked:false};
+      n++;
+    });
+    if(res&&res.title&&!S.title&&String(res.title).length<90)S.title=String(res.title);
+    if(res&&res.meta&&numbersOK(res.meta,notesText))S.meta=String(res.meta).slice(0,100);
+    if(!n||(res&&res.usable===false)){
+      T.thinInfo={reason:(res&&res.thinReason)||'',found:n};S.answers={};S.stage='thin';go();announce('These notes are too short to draft from.');return;
+    }
+    S.stage='readout';go();announce('Notes read. '+n+' of 9 questions are covered.');
+  }).catch(function(e){
+    if(e&&e.code==='cancelled')return;
+    T.busy=null;T.ctl=null;
+    T.err=(e&&(e.code==='not_granted'||e.code==='unavailable'||e.code==='sampling_disabled'))?'Reading notes needs Claude, which isn’t available in this view. Start from scratch instead.':'Claude couldn’t read this just now. Try again, or start from scratch.';
+    render({focus:false});
+  });
+}
+
+function saveAnswer(){
+  var q=Q(S.cur),ta=$('#answer'),text=ta.value.trim(),a=S.answers[q.id];
+  var errEl=$('#ansErr');if(errEl)errEl.textContent='';
+  if(T.coach&&T.coach.loading)return;
+  if(a&&a.status==='nodata'&&!text){delete S.drafts[q.id];T.coach=null;return advance()}
+  if(!text){if(errEl)errEl.textContent='Write a few words, or use Skip for now.';ta.focus();return}
+  var dirty=!a||a.text!==text||a.status==='draft';
+  if(T.coach&&T.coach.qid===q.id&&!dirty){return advance()}
+  if(a&&a.status==='draft'&&a.text===text){ /* confirm the notes draft as is */ }
+  var keepImp=((a&&a.flags)||[]).filter(function(f){return f.res==='impression'}).map(function(f){return norm(f.quote)});
+  var na={status:(a&&a.status==='nodata')?'nodata':'answered',text:text,preview:text,origin:(a&&a.origin!=='answer'&&a.text===text)?a.origin:'answer',quote:a&&a.quote,quality:null,flags:[],nudge:false,conflict:null,checked:false,previewSource:'raw',prevImp:keepImp};
+  S.answers[q.id]=na;delete S.drafts[q.id];save();
+  if(a&&a.origin!=='answer'&&a.text===text){ /* unchanged notes draft confirmed */ na.quality='strong';na.checked=true;T.coach=null;paintRail();paintPreview();return advance()}
+  checkAnswer(q,na,text);
+}
+function checkAnswer(q,a,text){
+  cancelCtl();T.ctl=typeof AbortController!=='undefined'?new AbortController():null;var ctl=T.ctl;
+  T.coach={qid:q.id,loading:true};paintCoach();paintRail();paintPreview();
+  var finish=function(res,notice){
+    if(S.answers[q.id]!==a||a.text!==text)return;
+    applyCoach(q,a,text,res);
+    if(S.review&&!S.review.notEnough)S.review.stale=true;
+    if(S.final&&!S.final.edited)S.final=null;
+    T.ctl=null;save();
+    var issues=hasIssues(a,res);
+    if(!issues){T.coach=null;paintRail();paintPreview();announce('Saved. Preview updated.');if(S.stage==='interview'&&Q(S.cur).id===q.id)advance();return}
+    T.coach={qid:q.id,loading:false,followup:a.followup,notice:notice||''};
+    paintCoach();paintRail();paintPreview();
+    announce('Saved. There are a few things to look at before you move on.');
+  };
+  askJSON(coachPrompt(q,text),'quick',ctl&&ctl.signal).then(function(res){finish(res,'')}).catch(function(e){
+    if(e&&e.code==='cancelled')return;
+    finish(localCheck(q,text),errCopy(e));
+  });
+}
+function hasIssues(a,res){
+  return !!(a.followup||(a.flags||[]).some(function(f){return f.res==='open'})||a.nudge||(a.conflict&&!a.conflict.resolved));
+}
+function applyCoach(q,a,text,res){
+  res=res||{};
+  a.flags=(res.flags||[]).filter(function(f){return f&&f.quote&&containsNorm(text,f.quote)}).slice(0,3).map(function(f){
+    return {id:uid(),quote:String(f.quote),reason:String(f.reason||'No source is given.'),res:(a.prevImp||[]).indexOf(norm(f.quote))>-1?'impression':'open'};
+  });
+  a.quality=['strong','thin','nodata'].indexOf(res.quality)>-1?res.quality:'strong';
+  if(a.quality==='nodata'&&q.nodata)a.status='nodata';
+  a.followup=a.quality==='thin'?(res.followup||q.fu):null;
+  a.nudge=!!res.teamNudge;
+  a.conflict=null;
+  var c=res.conflict;
+  if(c&&c.notesQuote&&c.answerQuote&&S.notes&&containsNorm(S.notes,c.notesQuote)&&containsNorm(text,c.answerQuote))a.conflict={notesQuote:String(c.notesQuote),answerQuote:String(c.answerQuote),why:String(c.why||''),resolved:null};
+  var pv=String(res.preview||'').trim();
+  if(pv&&pv.length<=900&&numbersOK(pv,text)){a.preview=pv;a.previewSource='claude'}else{a.preview=text;a.previewSource='raw'}
+  if(q.id==='q1'&&res.meta&&numbersOK(res.meta,text)&&!S.meta)S.meta=String(res.meta).slice(0,100);
+  a.checked=true;
+}
+function advance(){
+  var q=Q(S.cur);
+  if(S.gapFocus&&S.gapFocus.qid===q.id){S.gapFocus=null;S.stage='review';if(S.review)S.review.stale=true;T.coach=null;go();return}
+  var next=-1;
+  for(var k=1;k<=QUESTIONS.length;k++){var j=(S.cur+k)%QUESTIONS.length;if(!S.answers[QUESTIONS[j].id]){next=j;break}}
+  T.coach=null;
+  if(next<0)T.done=true;else{S.cur=next;T.done=false}
+  go();
+}
+function insertStarter(s){
+  var ta=$('#answer');if(!ta)return;
+  var v=ta.value;
+  ta.value=v?(/\s$/.test(v)?v:v+' ')+s:s;
+  ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);
+  ta.dispatchEvent(new Event('input',{bubbles:true}));
+}
+function flagOf(fid){var a=S.answers[Q(S.cur).id];return a&&(a.flags||[]).filter(function(f){return f.id===fid})[0]}
+function removeQuote(text,quote){
+  var i=text.indexOf(quote);
+  if(i<0){i=text.toLowerCase().indexOf(quote.toLowerCase())}
+  if(i<0)return null;
+  return (text.slice(0,i)+text.slice(i+quote.length)).replace(/\s{2,}/g,' ').replace(/\s+([.,;])/g,'$1').trim();
+}
+
+function openReview(){
+  if(answeredCount()<3){var el=$('#rail');announce('Answer at least three questions first.');return}
+  S.stage='review';T.done=false;T.err=null;
+  if(!S.review||S.review.notEnough){runReview();return}
+  go();
+}
+function runReview(){
+  if(answeredCount()<3){S.review={notEnough:true};go();return}
+  cancelCtl();T.ctl=typeof AbortController!=='undefined'?new AbortController():null;var ctl=T.ctl;
+  T.busy='review';T.err=null;S.stage='review';render({focus:false});
+  askJSON(reviewPrompt(caseText()),'default',ctl&&ctl.signal).then(function(res){
+    if(T.busy!=='review')return;
+    T.busy=null;T.ctl=null;
+    var lenses=(res.lenses||[]).filter(function(l){return l&&LENSES[l.id]});
+    var gapsR=(res.gaps||[]).filter(function(g){return g&&QIDS.indexOf(g.qid)>-1&&g.title}).slice(0,3);
+    if(!lenses.length||!gapsR.length)throw {code:'invalid'};
+    S.review={summary:String(res.summary||''),lenses:lenses,gaps:gapsR,stale:false,at:Date.now()};
+    go();announce('Review ready. Top gaps: '+gapsR.map(function(g){return g.title}).join('. '));
+  }).catch(function(e){
+    if(e&&e.code==='cancelled')return;
+    T.busy=null;T.ctl=null;
+    T.err=(e&&(e.code==='not_granted'||e.code==='unavailable'||e.code==='sampling_disabled'))?'The hiring-manager check needs Claude, which isn’t available in this view.':'Claude couldn’t run the check just now. Try again in a moment.';
+    render({focus:false});
+  });
+}
+
+function copyText(txt){
+  return (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt).then(function(){return true}):Promise.reject()).catch(function(){
+    try{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();var ok=document.execCommand('copy');ta.remove();return ok}catch(e){return false}
+  });
+}
+function finalMsg(m){var e=$('#finalMsg');if(e)e.textContent=m;announce(m)}
+function smooth(){
+  var f=S.final,orig=f.sections.map(function(s){return {id:s.id,heading:s.heading,body:s.body}});
+  finalMsg('Smoothing the writing…');
+  var prompt='You are editing a junior designer’s case study for flow only.\nRules: keep every fact. Do not add facts, numbers, outcomes, names or claims. Do not change anything inside square brackets and keep each bracketed item in its own section. Keep first person and plain words. Remove repetition and fix transitions. Keep each section within 120% of its original length. Reply with a single JSON object and nothing else:\n{"sections":[{"id":"q1","body":"..."}]}\nInclude every section id, in order.\n\nSections:\n'+JSON.stringify(orig);
+  askJSON(prompt,'default').then(function(res){
+    var out=(res&&res.sections)||[],changed=0,backup=f.sections.map(function(s){return {id:s.id,body:s.body}});
+    f.sections.forEach(function(s){
+      var n=out.filter(function(o){return o.id===s.id})[0];
+      if(!n||typeof n.body!=='string')return;
+      var br=s.body.match(/\[[^\]]*\]/g)||[];
+      var keeps=br.every(function(b){return n.body.indexOf(b)>-1});
+      if(!numbersOK(n.body,s.body)||!keeps||n.body.length>s.body.length*1.3+40)return;
+      if(n.body.trim()!==s.body.trim()){s.body=n.body.trim();changed++}
+    });
+    if(changed){f.backup=backup;f.edited=true;save();render({focus:false});finalMsg('Smoothed '+changed+' sections. Nothing was added.')}
+    else finalMsg('No safe changes found. Your text is unchanged.');
+  }).catch(function(e){finalMsg(errCopy(e).replace('I ran basic checks instead.','Your text is unchanged.').replace('I ran basic checks. Try again in a moment.','Your text is unchanged.').replace('I ran basic checks for now.','Your text is unchanged.'))});
+}
+
+function act(name,el){
+  var q=Q(S.cur);
+  switch(name){
+    case 'about':var d=$('#aboutDlg');if(d.showModal)d.showModal();else d.setAttribute('open','');break;
+    case 'close-about':var d2=$('#aboutDlg');if(d2.close)d2.close();else d2.removeAttribute('open');break;
+    case 'pick-notes':T.startPanel=T.startPanel==='notes'?null:'notes';T.err=null;render({focus:false});if(T.startPanel){var n=$('#notesInput');n&&n.focus()}break;
+    case 'pick-figma':T.startPanel=T.startPanel==='figma'?null:'figma';T.err=null;render({focus:false});if(T.startPanel){var fi=$('#figmaInput');fi&&fi.focus()}break;
+    case 'pick-scratch':S=fresh();S.source='scratch';S.stage='interview';S.cur=0;T.done=false;T.coach=null;go();break;
+    case 'example-notes':T.notesInput=EXAMPLE_NOTES;T.err=null;render({focus:false});break;
+    case 'example-thin':T.notesInput=EXAMPLE_THIN;T.err=null;render({focus:false});break;
+    case 'example-figma':T.figmaUrl='https://www.figma.com/design/SAMPLEfile123/Transit-ticketing-redesign?node-id=1-2';T.err=null;render({focus:false});break;
+    case 'example-figma-private':T.figmaUrl='https://www.figma.com/design/PRIVATEfile456/private-client-work';T.err=null;render({focus:false});break;
+    case 'analyze-notes':
+      var nv=($('#notesInput')||{}).value||T.notesInput;T.notesInput=nv;
+      if(words(nv)<8){T.thinInfo={reason:'There isn’t enough here for me to find a specific answer to any question.',found:0};S.notes=nv;S.stage='thin';go();break}
+      if(T.ai!=='ok'){T.err='Reading notes needs Claude, which isn’t available in this view. Start from scratch instead.';render({focus:false});break}
+      analyze(nv,'notes');break;
+    case 'analyze-figma':
+      var u=(($('#figmaInput')||{}).value||T.figmaUrl).trim();T.figmaUrl=u;
+      if(!/^https?:\/\/(www\.)?figma\.com\/(design|file|proto|board|make)\/[A-Za-z0-9]+/i.test(u)){T.err='That doesn’t look like a Figma link. It should start with https://www.figma.com/design/…';render({focus:false});$('#figmaInput')&&$('#figmaInput').focus();break}
+      if(/private/i.test(u)){T.err='I can’t open this file. It’s private or I don’t have access. Paste notes from it instead, or start from scratch.';render({focus:false});break}
+      if(T.ai!=='ok'){T.err='Reading a project needs Claude, which isn’t available in this view. Start from scratch instead.';render({focus:false});break}
+      analyze(FIGMA_SAMPLE,'figma');break;
+    case 'cancel-busy':cancelCtl();T.busy=null;if(S.stage==='review'){S.stage=answeredCount()?'interview':'start'}render({focus:false});break;
+    case 'thin-more':S.stage='start';T.startPanel='notes';go();break;
+    case 'thin-scratch':var keep=T.notesInput||S.notes;S=fresh();S.source='scratch';S.notes=words(keep)>=5?keep:'';S.stage='interview';T.done=false;go();break;
+    case 'toggle-confirm':var ca=S.answers[el.dataset.q];if(ca){ca.status=el.checked?'answered':'draft';if(el.checked){ca.quality='strong';ca.checked=true}save()}break;
+    case 'readout-continue':startInterview();break;
+    case 'resume':S.stage=S.resume||'interview';S.resume=null;T.justSaved=false;if(S.stage==='welcome')S.stage='interview';go();break;
+    case 'restart':T.confirmRestart=true;render({focus:false});break;
+    case 'restart-no':T.confirmRestart=false;render({focus:false});break;
+    case 'restart-yes':try{localStorage.removeItem(KEY)}catch(e){}S=fresh();T.confirmRestart=false;T.justSaved=false;T.startPanel=null;T.notesInput='';T.coach=null;T.done=false;render();break;
+    case 'exit':
+      if(S.stage==='interview'){var ta=$('#answer');if(ta)S.drafts[q.id]=ta.value}
+      S.resume=S.stage;S.stage='welcome';T.justSaved=true;save(true);render();break;
+    case 'save':saveAnswer();break;
+    case 'skip':
+      if(!S.answers[q.id]){S.answers[q.id]={status:'skipped',text:'',origin:'answer',flags:[],nudge:false,conflict:null};}
+      delete S.drafts[q.id];T.coach=null;advance();break;
+    case 'prev':if(S.cur>0){S.cur--;T.done=false;T.coach=null;go()}break;
+    case 'goto':S.cur=+el.dataset.i;T.done=false;T.coach=null;go();break;
+    case 'gap-goto':S.cur=+el.dataset.i;T.done=false;T.coach=null;go();break;
+    case 'stage-goto':
+      var qs=QUESTIONS.filter(function(x){return x.sec===el.dataset.sec});
+      var tgt=qs.filter(function(x){return !S.answers[x.id]})[0]||qs[0];
+      S.cur=QI(tgt.id);T.done=false;T.coach=null;go();break;
+    case 'chip':insertStarter(el.dataset.starter);break;
+    case 'nodata':
+      var t0=($('#answer')||{}).value||'';
+      S.answers[q.id]={status:'nodata',text:t0.trim(),preview:t0.trim(),origin:'answer',quality:'nodata',flags:[],nudge:false,conflict:null,checked:true};
+      save();paintCoach();paintRail();paintPreview();announce('Marked as not available. You can add what you do know.');break;
+    case 'nodata-undo':
+      var cur=S.answers[q.id];if(cur&&cur.text){cur.status='answered';cur.quality=null}else delete S.answers[q.id];
+      save();render({focus:false});break;
+    case 'followup-add':if(T.coach)T.coach.followupDone=true;var tf=$('#answer');paintCoach();if(tf){tf.focus();tf.setSelectionRange(tf.value.length,tf.value.length)}break;
+    case 'followup-keep':if(T.coach)T.coach.followupDone=true;paintCoach();break;
+    case 'flag-evidence':
+      var f1=flagOf(el.dataset.fid),ta1=$('#answer');
+      if(f1&&ta1){ta1.focus();var ix=ta1.value.toLowerCase().indexOf(f1.quote.toLowerCase());if(ix>-1)ta1.setSelectionRange(ix,ix+f1.quote.length);announce('Edit the highlighted claim to add where it comes from, then save.')}break;
+    case 'flag-impression':
+      var f2=flagOf(el.dataset.fid);if(f2){f2.res='impression';save();paintCoach();paintRail();paintPreview()}break;
+    case 'flag-remove':
+      var f3=flagOf(el.dataset.fid),ta3=$('#answer');
+      if(f3&&ta3){var nt=removeQuote(ta3.value,f3.quote);if(nt===null){ta3.focus();announce('I couldn’t find it to remove. Edit the text directly.')}else{ta3.value=nt;T.coach=null;if(nt)saveAnswer();else{delete S.answers[q.id];paintCoach();paintRail();paintPreview()}}}break;
+    case 'nudge-shared':var an=S.answers[q.id];if(an){an.nudge=false;save();paintCoach();paintRail();paintPreview()}break;
+    case 'conflict-mine':case 'conflict-none':
+      var ac=S.answers[q.id];if(ac&&ac.conflict){ac.conflict.resolved=name==='conflict-mine'?'answer':'none';save();paintCoach();paintRail();paintPreview()}break;
+    case 'conflict-notes':
+      var tn=$('#answer');if(tn){tn.focus();announce('Update your answer to match your notes, then save.')}
+      if(T.coach)T.coach.notice='Edit your answer to match your notes, then save again.';paintCoach();break;
+    case 'keep-editing':T.done=false;var g0=gaps()[0];S.cur=g0?g0.i:0;go();break;
+    case 'open-review':openReview();break;
+    case 'recheck':S.review=null;runReview();break;
+    case 'back-interview':S.stage='interview';T.done=false;T.err=null;go();break;
+    case 'back-review':S.gapFocus=null;S.stage='review';if(S.review)S.review.stale=true;go();break;
+    case 'fix-gap':
+      var gp=S.review.gaps[+el.dataset.k];S.gapFocus={qid:gp.qid,title:gp.title,why:gp.why};
+      S.cur=QI(gp.qid);S.stage='interview';T.done=false;T.coach=null;go();break;
+    case 'to-final':if(!S.final||!S.final.edited)buildFinal();S.stage='final';go();break;
+    case 'rebuild':buildFinal();go();break;
+    case 'copy':copyText(finalText()).then(function(ok){finalMsg(ok?'Copied. Paste it into your portfolio.':'Couldn’t copy automatically. Select the text in the page and copy it.')});break;
+    case 'download':
+      (window.claude&&window.claude.use?window.claude.use('downloads'):Promise.resolve(null)).then(function(dl){
+        if(!dl){finalMsg('Downloads aren’t available here. Use Copy case study instead.');return}
+        return dl.save({filename:'case-study.md',data:finalText()}).then(function(){finalMsg('Saved.')}).catch(function(){finalMsg('Download was cancelled.')});
+      }).catch(function(){finalMsg('Downloads aren’t available here. Use Copy case study instead.')});break;
+    case 'smooth':smooth();break;
+    case 'undo-smooth':
+      if(S.final.backup){S.final.sections.forEach(function(s){var b=S.final.backup.filter(function(x){return x.id===s.id})[0];if(b)s.body=b.body});S.final.backup=null;save();render({focus:false});finalMsg('Undone.')}break;
+  }
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]');if(!b)return;
+  if(b.tagName==='INPUT')return;
+  if(b.getAttribute('aria-disabled')==='true'&&b.dataset.act==='open-review'){announce('Answer at least three questions first.');return}
+  act(b.dataset.act,b);
+});
+document.addEventListener('change',function(e){var t=e.target;if(t.dataset&&t.dataset.act==='toggle-confirm')act('toggle-confirm',t)});
+document.addEventListener('input',function(e){
+  var t=e.target,b=t.dataset&&t.dataset.bind;if(!b)return;
+  if(b==='title'){S.title=t.value;$$('[data-bind="title"]').forEach(function(x){if(x!==t)x.value=t.value});save();paintPreview()}
+  else if(b==='meta'){S.meta=t.value;save()}
+  else if(b==='answer'){var q=Q(S.cur);S.drafts[q.id]=t.value;save();var c=$('#ansCount');if(c)c.textContent=words(t.value)+' words';var sb=$('#saveBtn');if(sb&&!(T.coach&&T.coach.loading))sb.textContent=saveLabel();paintPreview()}
+  else if(b==='notesInput'){T.notesInput=t.value;var nc=$('#notesCount');if(nc)nc.textContent=words(t.value)+' words'}
+  else if(b==='figmaUrl'){T.figmaUrl=t.value}
+  else if(b==='readout'){var a=S.answers[t.dataset.q];if(a){a.text=t.value;a.preview=t.value;save()}}
+  else if(b==='final'){var k=+t.dataset.k;S.final.sections[k].body=t.value;S.final.edited=true;autosize(t);save();var sd=$('.side');if(sd)sd.innerHTML=finalSide()}
+});
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&e.target.id==='answer'){e.preventDefault();saveAnswer()}
+});
+
+/* ---------- boot ---------- */
+render();
+initAI();
+window.__csc={S:function(){return S},T:T,act:act};
+})();
+</script>
+</body>
+</html>

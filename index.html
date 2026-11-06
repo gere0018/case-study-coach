@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Case Study Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/tokens.css">
+<link rel="stylesheet" href="src/styles.css">
+<meta name="description" content="Write an honest case study. A guided interview for early-career product designers.">
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div id="app"></div>
+<div id="live" class="sr" role="status" aria-live="polite"></div>
+<dialog id="aboutDlg" aria-labelledby="aboutH">
+  <h2 id="aboutH">About this prototype</h2>
+  <ul>
+    <li>Outside Claude, this runs in basic mode: it checks your answers and gaps with simple rules. Nothing you type leaves your browser.</li>
+    <li>Inside Claude, coaching, previews and the hiring-manager check are written by Claude, so remove confidential details first.</li>
+    <li>Reading a Figma link is simulated and only works inside Claude.</li>
+    <li>Your progress is saved in this browser only. Use Save and exit to leave and come back.</li>
+    <li>The coach never adds metrics, outcomes, decisions or quotes you didn’t write.</li>
+  </ul>
+  <div class="btnrow"><button class="btn primary" data-act="close-about">Close</button></div>
+</dialog>
+
+<script src="src/app.js"></script>
+</body>
+</html>

@@ -220,7 +220,7 @@ function localCheck(q,text){
 /* ---------- views ---------- */
 function hdr(mode){
   var brand='<div class="brand"><svg class="logo" aria-hidden="true" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor"/><path d="M7.5 9h9M7.5 12.5h9M7.5 16h5.5" stroke="var(--on-accent)" stroke-width="1.8" stroke-linecap="round"/></svg><span>Case Study Coach</span></div>';
-  if(mode==='lite')return '<header class="hdr">'+brand+'<div class="hdr-r"><button class="btn ghost small" data-act="about">About this prototype</button>'+themeButton()+'</div></header>';
+  if(mode==='lite')return '<header class="hdr">'+brand+'<div class="hdr-r"><button class="btn ghost small" data-act="about">About this prototype</button></div><div class="moonglade-mark" aria-hidden="true"><img src="src/assets/moonglade-mark.svg" alt="" width="64" height="64"></div></header>';
   var label={interview:'Guided interview',review:'Hiring-manager check',final:'Your case study',readout:'Notes readout'}[S.stage]||'';
   return '<header class="hdr">'+brand+'<span class="vr" aria-hidden="true"></span><div class="title-wrap"><label class="sr" for="titleInput">Case study title</label><input id="titleInput" class="title-input" data-bind="title" value="'+esc(S.title)+'" placeholder="Untitled case study" maxlength="90" autocomplete="off"></div><div class="hdr-r"><span class="mode">'+label+'</span><span class="saved" id="savedStatus"></span><button class="btn small" data-act="exit">Save and exit</button><button class="btn ghost small" data-act="about">About</button>'+themeButton()+'</div></header>';
 }
@@ -231,7 +231,7 @@ function flowHTML(){
 }
 function startView(){
   var p=T.startPanel,busy=T.busy;
-  var opt=function(act,ic,t,d,on){return '<button class="opt'+(on?' on':'')+'" data-act="'+act+'"'+(on!==undefined&&act!=='pick-scratch'?' aria-expanded="'+on+'"':'')+(busy?' disabled':'')+'><span class="opt-ic">'+icon[ic]+'</span><span class="opt-t">'+t+'</span><span class="opt-d">'+d+'</span></button>'};
+  var opt=function(act,ic,t,d,on){return '<button class="opt'+(on?' on':'')+(act==='pick-scratch'?' featured':'')+'" data-act="'+act+'"'+(on!==undefined&&act!=='pick-scratch'?' aria-expanded="'+on+'"':'')+(busy?' disabled':'')+'><span class="opt-ic">'+icon[ic]+'</span><span class="opt-t">'+t+'</span><span class="opt-d">'+d+'</span></button>'};
   var panel='';
   if(busy==='analyze'||busy==='figma'){
     panel='<div class="loading" role="status" aria-live="polite" style="margin-top:16px"><span class="spin" aria-hidden="true"></span><div><strong>'+(busy==='figma'?'Reading the Figma project…':'Reading your notes…')+'</strong><p>I’m looking for what they already answer. This can take up to a minute.</p></div><button class="btn small" data-act="cancel-busy" style="margin-left:auto">Cancel</button></div>';

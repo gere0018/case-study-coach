@@ -95,11 +95,22 @@ var icon={
  notes:'<svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="16" height="19" rx="3"/><path d="M9 9h8M9 13h8M9 17h5"/></svg>',
  figma:'<svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15l4-4M10 11.5l-2.2 2.2a3.6 3.6 0 0 0 5.1 5.1L15 16.7M16 14.5l2.2-2.2a3.6 3.6 0 0 0-5.1-5.1L11 9.3"/></svg>',
  pen:'<svg aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21l1-5L17.5 4.5a2.1 2.1 0 0 1 3 3L9 19l-4 2z"/></svg>',
- alert:'<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 2v6M7 11v.5"/></svg>'
+ alert:'<svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 2v6M7 11v.5"/></svg>',
+ sun:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3.75"/><path d="M12 2.25v2M12 19.75v2M2.25 12h2M19.75 12h2M5.1 5.1l1.4 1.4M17.5 17.5l1.4 1.4M18.9 5.1l-1.4 1.4M6.5 17.5l-1.4 1.4"/></svg>',
+ moon:'<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 15.4A8.5 8.5 0 0 1 8.6 3.5a8.5 8.5 0 1 0 11.9 11.9z"/></svg>'
 };
 
 /* ---------- state ---------- */
 var KEY='case-study-coach:v1';
+var THEME_KEY='case-study-coach:theme';
+function loadTheme(){try{return localStorage.getItem(THEME_KEY)==='light'?'light':'dark'}catch(e){return 'dark'}}
+var theme=loadTheme();
+function applyTheme(){document.documentElement.classList.remove('light','dark');document.documentElement.classList.add(theme)}
+function themeButton(){
+  var next=theme==='dark'?'light':'dark';
+  return '<button class="theme-toggle" data-act="theme" type="button" aria-label="Switch to '+next+' theme" title="Switch to '+next+' theme">'+icon[theme==='dark'?'sun':'moon']+'</button>';
+}
+applyTheme();
 function fresh(){return {v:1,stage:'start',resume:null,source:null,notes:'',title:'',meta:'',answers:{},drafts:{},cur:0,review:null,final:null,gapFocus:null,found:null,savedOn:null}}
 function loadState(){try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
 var S=loadState()||fresh();
@@ -209,9 +220,9 @@ function localCheck(q,text){
 /* ---------- views ---------- */
 function hdr(mode){
   var brand='<div class="brand"><svg class="logo" aria-hidden="true" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor"/><path d="M7.5 9h9M7.5 12.5h9M7.5 16h5.5" stroke="var(--on-accent)" stroke-width="1.8" stroke-linecap="round"/></svg><span>Case Study Coach</span></div>';
-  if(mode==='lite')return '<header class="hdr">'+brand+'<div class="hdr-r"><button class="btn ghost small" data-act="about">About this prototype</button></div></header>';
+  if(mode==='lite')return '<header class="hdr">'+brand+'<div class="hdr-r"><button class="btn ghost small" data-act="about">About this prototype</button>'+themeButton()+'</div></header>';
   var label={interview:'Guided interview',review:'Hiring-manager check',final:'Your case study',readout:'Notes readout'}[S.stage]||'';
-  return '<header class="hdr">'+brand+'<span class="vr" aria-hidden="true"></span><div class="title-wrap"><label class="sr" for="titleInput">Case study title</label><input id="titleInput" class="title-input" data-bind="title" value="'+esc(S.title)+'" placeholder="Untitled case study" maxlength="90" autocomplete="off"></div><div class="hdr-r"><span class="mode">'+label+'</span><span class="saved" id="savedStatus"></span><button class="btn small" data-act="exit">Save and exit</button><button class="btn ghost small" data-act="about">About</button></div></header>';
+  return '<header class="hdr">'+brand+'<span class="vr" aria-hidden="true"></span><div class="title-wrap"><label class="sr" for="titleInput">Case study title</label><input id="titleInput" class="title-input" data-bind="title" value="'+esc(S.title)+'" placeholder="Untitled case study" maxlength="90" autocomplete="off"></div><div class="hdr-r"><span class="mode">'+label+'</span><span class="saved" id="savedStatus"></span><button class="btn small" data-act="exit">Save and exit</button><button class="btn ghost small" data-act="about">About</button>'+themeButton()+'</div></header>';
 }
 
 function flowHTML(){
@@ -655,6 +666,14 @@ function smooth(){
 function act(name,el){
   var q=Q(S.cur);
   switch(name){
+    case 'theme':
+      theme=theme==='dark'?'light':'dark';applyTheme();
+      try{localStorage.setItem(THEME_KEY,theme)}catch(e){}
+      var next=theme==='dark'?'light':'dark';
+      el.innerHTML=icon[theme==='dark'?'sun':'moon'];
+      el.setAttribute('aria-label','Switch to '+next+' theme');
+      el.setAttribute('title','Switch to '+next+' theme');
+      announce((theme==='dark'?'Dark':'Light')+' theme on.');break;
     case 'about':var d=$('#aboutDlg');if(d.showModal)d.showModal();else d.setAttribute('open','');break;
     case 'close-about':var d2=$('#aboutDlg');if(d2.close)d2.close();else d2.removeAttribute('open');break;
     case 'pick-notes':T.startPanel=T.startPanel==='notes'?null:'notes';T.err=null;render({focus:false});if(T.startPanel){var n=$('#notesInput');n&&n.focus()}break;
